@@ -1,0 +1,48 @@
+/**
+ * Simple logger utility for the application
+ * Can be replaced with a more robust logging solution if needed
+ */
+
+type LogLevel = "debug" | "info" | "warn" | "error";
+
+class Logger {
+  private enabled: boolean;
+
+  constructor() {
+    this.enabled = process.env.NODE_ENV !== "production" || process.env.DEBUG === "true";
+  }
+
+  private formatMessage(level: LogLevel, message: string, metadata?: any): string {
+    const timestamp = new Date().toISOString();
+    const metadataStr = metadata ? ` ${JSON.stringify(metadata)}` : "";
+    return `[${timestamp}] [${level.toUpperCase()}] ${message}${metadataStr}`;
+  }
+
+  debug(message: string, metadata?: any): void {
+    if (this.enabled) {
+      console.debug(this.formatMessage("debug", message, metadata));
+    }
+  }
+
+  info(message: string, metadata?: any): void {
+    console.info(this.formatMessage("info", message, metadata));
+  }
+
+  warn(message: string, metadata?: any): void {
+    console.warn(this.formatMessage("warn", message, metadata));
+  }
+
+  error(message: string, error?: Error, metadata?: any): void {
+    const errorDetails = error
+      ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        }
+      : undefined;
+
+    console.error(this.formatMessage("error", message, { ...metadata, error: errorDetails }));
+  }
+}
+
+export const logger = new Logger();
