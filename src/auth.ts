@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { prisma } from "@/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Role } from "@prisma/client";
+import { Role } from "@/prisma/client";
 import { logger } from "@/lib/logger";
 
 // Error handling class for authentication issues

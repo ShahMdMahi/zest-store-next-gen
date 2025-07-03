@@ -3,7 +3,7 @@
  */
 import { hash, compare } from "bcryptjs";
 import crypto from "crypto";
-import { logger } from "./logger";
+import { logger } from "@/lib/logger";
 
 // Recommended cost factor for bcrypt (higher is more secure but slower)
 const SALT_ROUNDS = 12;

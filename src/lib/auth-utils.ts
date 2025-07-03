@@ -1,5 +1,5 @@
-import { User } from "@prisma/client";
-import { logger } from "./logger";
+import { User } from "@/prisma/client";
+import { logger } from "@/lib/logger";
 import { auth } from "@/auth";
 
 /**

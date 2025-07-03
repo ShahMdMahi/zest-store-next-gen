@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma";
-import { logger } from "./logger";
+import { logger } from "@/lib/logger";
 
 // Maximum allowed failed login attempts before enforcing a cooldown
 const MAX_FAILED_ATTEMPTS = 5;
