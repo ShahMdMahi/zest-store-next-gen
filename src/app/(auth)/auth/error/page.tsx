@@ -17,15 +17,17 @@ export const metadata: Metadata = {
   description: "An error occurred during authentication",
 };
 
-export default function ErrorPage({
+export default async function ErrorPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  // Await the searchParams promise to get the actual object
+  const params = await searchParams;
   // Get error message from search params, fallback to generic message
   const error =
-    typeof searchParams.error === "string"
-      ? searchParams.error
+    typeof params.error === "string"
+      ? params.error
       : "An unexpected error occurred";
 
   // Map known error codes to user-friendly messages
