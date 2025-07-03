@@ -28,7 +28,9 @@ export default function MainLayout({
   return (
     <SessionProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
           <ThemeProvider>
             {children}
             <Toaster />

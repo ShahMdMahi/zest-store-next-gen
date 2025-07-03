@@ -16,8 +16,12 @@ export default function LoginPage() {
             <Layers className="h-6 w-6 text-primary" />
           </div>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Welcome back</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Enter your credentials to access your account</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          Welcome back
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Enter your credentials to access your account
+        </p>
       </div>
       <LoginForm />
     </div>

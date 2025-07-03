@@ -9,7 +9,10 @@ import { auth } from "@/auth";
 /**
  * Validates if a user meets the required criteria
  */
-export function validateUser(user: Partial<User>): { valid: boolean; errors: string[] } {
+export function validateUser(user: Partial<User>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   // Email validation - basic check
@@ -78,7 +81,10 @@ export async function getCurrentUserId(): Promise<string | null> {
 /**
  * Handle authentication errors with appropriate responses
  */
-export function handleAuthError(error: unknown): { message: string; status: number } {
+export function handleAuthError(error: unknown): {
+  message: string;
+  status: number;
+} {
   logger.error("Authentication error", error as Error);
 
   if (error instanceof Error) {

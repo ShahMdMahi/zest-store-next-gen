@@ -14,7 +14,11 @@ export async function middleware(request: NextRequest) {
   const isAdminRoute = pathname.startsWith("/admin");
 
   // Protected routes that require authentication
-  const isProtectedRoute = pathname.startsWith("/profile") || pathname.startsWith("/account") || pathname.startsWith("/orders") || pathname.startsWith("/dashboard");
+  const isProtectedRoute =
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/account") ||
+    pathname.startsWith("/orders") ||
+    pathname.startsWith("/dashboard");
 
   logger.debug("Middleware request:", {
     isAuthenticated,

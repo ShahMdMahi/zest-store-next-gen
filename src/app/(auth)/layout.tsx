@@ -29,10 +29,17 @@ export default function AuthLayout({
           ></div>
 
           {/* Bottom gradient */}
-          <div className="absolute bottom-0 left-0 h-[50%] w-full bg-gradient-to-t from-muted/10 to-transparent" aria-hidden="true"></div>
+          <div
+            className="absolute bottom-0 left-0 h-[50%] w-full bg-gradient-to-t from-muted/10 to-transparent"
+            aria-hidden="true"
+          ></div>
 
           {/* Decorative blobs */}
-          <div className="absolute right-[20%] top-1/4 h-[40rem] w-[40rem] rounded-full bg-primary/5 blur-3xl animate-pulse" style={{ animationDuration: "15s" }} aria-hidden="true"></div>
+          <div
+            className="absolute right-[20%] top-1/4 h-[40rem] w-[40rem] rounded-full bg-primary/5 blur-3xl animate-pulse"
+            style={{ animationDuration: "15s" }}
+            aria-hidden="true"
+          ></div>
           <div
             className="absolute left-[15%] bottom-1/4 h-[30rem] w-[30rem] rounded-full bg-primary/5 blur-3xl animate-pulse"
             style={{ animationDuration: "20s", animationDelay: "2s" }}
@@ -54,7 +61,9 @@ export default function AuthLayout({
 
         {/* Content container with subtle card-like styling */}
         <div className="container max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
-          <div className="relative w-full backdrop-blur-sm bg-background/60 dark:bg-background/40 rounded-xl shadow-lg border border-border/30 p-6 sm:p-8">{children}</div>
+          <div className="relative w-full backdrop-blur-sm bg-background/60 dark:bg-background/40 rounded-xl shadow-lg border border-border/30 p-6 sm:p-8">
+            {children}
+          </div>
         </div>
       </main>
 

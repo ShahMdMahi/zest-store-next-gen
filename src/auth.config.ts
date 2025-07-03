@@ -53,14 +53,20 @@ export default {
           });
 
           if (!user) {
-            logger.warn(`Login attempt with email not found: ${credentials.email}`);
+            logger.warn(
+              `Login attempt with email not found: ${credentials.email}`,
+            );
             return null;
           }
 
           // Handle users without passwords (OAuth users)
           if (!user.password) {
-            logger.warn(`Password login attempt for OAuth user: ${credentials.email}`);
-            throw new Error("This account cannot use password login. Please use the provider you signed up with.");
+            logger.warn(
+              `Password login attempt for OAuth user: ${credentials.email}`,
+            );
+            throw new Error(
+              "This account cannot use password login. Please use the provider you signed up with.",
+            );
           }
 
           // Make sure credentials.password is a string
@@ -70,10 +76,15 @@ export default {
           }
 
           // Verify password
-          const passwordMatch = await bcrypt.compare(credentials.password, user.password);
+          const passwordMatch = await bcrypt.compare(
+            credentials.password,
+            user.password,
+          );
 
           if (!passwordMatch) {
-            logger.warn(`Failed login attempt (password mismatch): ${credentials.email}`);
+            logger.warn(
+              `Failed login attempt (password mismatch): ${credentials.email}`,
+            );
             return null;
           }
 
@@ -91,7 +102,10 @@ export default {
   debug: process.env.NODE_ENV === "development",
   cookies: {
     sessionToken: {
-      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      name:
+        process.env.NODE_ENV === "production"
+          ? `__Secure-next-auth.session-token`
+          : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",

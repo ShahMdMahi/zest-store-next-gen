@@ -6,7 +6,12 @@ import { prisma } from "@/prisma";
 import { signIn } from "@/auth";
 import { logger } from "@/lib/logger";
 import { verifyPassword } from "@/lib/password-utils";
-import { isAccountLocked, resetFailedLoginAttempts, recordFailedLoginAttempt, getCooldownTimeRemaining } from "@/lib/auth-security";
+import {
+  isAccountLocked,
+  resetFailedLoginAttempts,
+  recordFailedLoginAttempt,
+  getCooldownTimeRemaining,
+} from "@/lib/auth-security";
 
 // Login validation schema
 const loginSchema = z.object({
@@ -24,7 +29,10 @@ export type LoginFormState = {
   success?: boolean;
 };
 
-export async function login(prevState: LoginFormState, formData: FormData): Promise<LoginFormState> {
+export async function login(
+  prevState: LoginFormState,
+  formData: FormData,
+): Promise<LoginFormState> {
   try {
     // Extract and validate form data
     const validatedFields = loginSchema.safeParse({
@@ -50,7 +58,9 @@ export async function login(prevState: LoginFormState, formData: FormData): Prom
 
       return {
         errors: {
-          _form: [`Too many failed attempts. Please try again in ${minutes} minutes.`],
+          _form: [
+            `Too many failed attempts. Please try again in ${minutes} minutes.`,
+          ],
         },
         message: `Account temporarily locked. Try again in ${minutes} minutes.`,
         success: false,

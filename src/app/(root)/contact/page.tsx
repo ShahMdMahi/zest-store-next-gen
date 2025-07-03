@@ -11,7 +11,11 @@ export default function ContactPage() {
       <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
 
       <div className="prose dark:prose-invert mb-8">
-        <p>We'd love to hear from you! Whether you have a question about our products, need help with an order, or just want to say hello, please don't hesitate to reach out to us.</p>
+        <p>
+          We&apos;d love to hear from you! Whether you have a question about our
+          products, need help with an order, or just want to say hello, please
+          don&apos;t hesitate to reach out to us.
+        </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
@@ -53,13 +57,21 @@ export default function ContactPage() {
               <label htmlFor="first-name" className="text-sm font-medium">
                 First name
               </label>
-              <input id="first-name" className="w-full p-2 border rounded-md bg-background" placeholder="Enter your first name" />
+              <input
+                id="first-name"
+                className="w-full p-2 border rounded-md bg-background"
+                placeholder="Enter your first name"
+              />
             </div>
             <div className="space-y-2">
               <label htmlFor="last-name" className="text-sm font-medium">
                 Last name
               </label>
-              <input id="last-name" className="w-full p-2 border rounded-md bg-background" placeholder="Enter your last name" />
+              <input
+                id="last-name"
+                className="w-full p-2 border rounded-md bg-background"
+                placeholder="Enter your last name"
+              />
             </div>
           </div>
 
@@ -67,24 +79,41 @@ export default function ContactPage() {
             <label htmlFor="email" className="text-sm font-medium">
               Email
             </label>
-            <input id="email" type="email" className="w-full p-2 border rounded-md bg-background" placeholder="Enter your email" />
+            <input
+              id="email"
+              type="email"
+              className="w-full p-2 border rounded-md bg-background"
+              placeholder="Enter your email"
+            />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="subject" className="text-sm font-medium">
               Subject
             </label>
-            <input id="subject" className="w-full p-2 border rounded-md bg-background" placeholder="Enter the subject" />
+            <input
+              id="subject"
+              className="w-full p-2 border rounded-md bg-background"
+              placeholder="Enter the subject"
+            />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="message" className="text-sm font-medium">
               Message
             </label>
-            <textarea id="message" rows={5} className="w-full p-2 border rounded-md bg-background" placeholder="Enter your message" />
+            <textarea
+              id="message"
+              rows={5}
+              className="w-full p-2 border rounded-md bg-background"
+              placeholder="Enter your message"
+            />
           </div>
 
-          <button type="submit" className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90">
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+          >
             Send Message
           </button>
         </form>

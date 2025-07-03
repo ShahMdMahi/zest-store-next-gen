@@ -2,10 +2,19 @@
 
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { ProfileButton } from "@/components/common/profile-button";
 import { MobileSearch } from "@/components/root/search";
 
@@ -32,11 +41,17 @@ export function RootNavbarMobile() {
           {/* Mobile Menu Items */}
           <div className="flex-1 px-4 py-2 overflow-y-auto">
             <div className="space-y-1">
-              <Collapsible open={categoryOpen} onOpenChange={setCategoryOpen} className="w-full">
+              <Collapsible
+                open={categoryOpen}
+                onOpenChange={setCategoryOpen}
+                className="w-full"
+              >
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" className="w-full justify-between">
                     Products
-                    <ChevronDown className={`h-4 w-4 transition-transform ${categoryOpen ? "transform rotate-180" : ""}`} />
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${categoryOpen ? "transform rotate-180" : ""}`}
+                    />
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-4 space-y-1">
@@ -59,11 +74,21 @@ export function RootNavbarMobile() {
                 </CollapsibleContent>
               </Collapsible>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => setOpen(false)} asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => setOpen(false)}
+                asChild
+              >
                 <Link href="/deals">Deals</Link>
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => setOpen(false)} asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => setOpen(false)}
+                asChild
+              >
                 <Link href="/new-arrivals">New Arrivals</Link>
               </Button>
 
@@ -75,7 +100,10 @@ export function RootNavbarMobile() {
 
             <div className="mt-6 pt-6 border-t">
               <div className="px-2">
-                <ProfileButton isMobile={true} onMobileNavClose={() => setOpen(false)} />
+                <ProfileButton
+                  isMobile={true}
+                  onMobileNavClose={() => setOpen(false)}
+                />
               </div>
             </div>
           </div>

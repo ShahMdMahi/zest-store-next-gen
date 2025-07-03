@@ -1,6 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserPlus } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 export default function RegisterLoading() {
   return (

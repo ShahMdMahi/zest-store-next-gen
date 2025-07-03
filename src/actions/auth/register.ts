@@ -14,10 +14,19 @@ const registerSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .refine((password) => /[A-Z]/.test(password), { message: "Password must contain at least one uppercase letter" })
-      .refine((password) => /[a-z]/.test(password), { message: "Password must contain at least one lowercase letter" })
-      .refine((password) => /[0-9]/.test(password), { message: "Password must contain at least one number" })
-      .refine((password) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password), { message: "Password must contain at least one special character" }),
+      .refine((password) => /[A-Z]/.test(password), {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .refine((password) => /[a-z]/.test(password), {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .refine((password) => /[0-9]/.test(password), {
+        message: "Password must contain at least one number",
+      })
+      .refine(
+        (password) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
+        { message: "Password must contain at least one special character" },
+      ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -37,7 +46,10 @@ export type RegisterFormState = {
   success?: boolean;
 };
 
-export async function register(prevState: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
+export async function register(
+  prevState: RegisterFormState,
+  formData: FormData,
+): Promise<RegisterFormState> {
   try {
     // Extract and validate form data
     const validatedFields = registerSchema.safeParse({

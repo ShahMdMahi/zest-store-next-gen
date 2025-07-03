@@ -4,7 +4,14 @@ import { useState } from "react";
 import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface NewsletterProps {
   className?: string;
@@ -12,7 +19,11 @@ interface NewsletterProps {
   showSheetView?: boolean;
 }
 
-export function Newsletter({ className, buttonLabel = "Subscribe", showSheetView = false }: NewsletterProps) {
+export function Newsletter({
+  className,
+  buttonLabel = "Subscribe",
+  showSheetView = false,
+}: NewsletterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -30,7 +41,15 @@ export function Newsletter({ className, buttonLabel = "Subscribe", showSheetView
 
   const newsletterForm = (
     <form className="flex flex-col sm:flex-row gap-2" onSubmit={handleSubmit}>
-      <Input type="email" placeholder="Your email address" className="rounded-md h-9" required aria-label="Email for newsletter" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <Input
+        type="email"
+        placeholder="Your email address"
+        className="rounded-md h-9"
+        required
+        aria-label="Email for newsletter"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
       <Button type="submit" className="h-9 whitespace-nowrap">
         {buttonLabel}
       </Button>
@@ -49,7 +68,10 @@ export function Newsletter({ className, buttonLabel = "Subscribe", showSheetView
         <SheetContent side="bottom" className="p-6">
           <SheetHeader className="mb-4">
             <SheetTitle>Stay Updated</SheetTitle>
-            <SheetDescription>Subscribe to our newsletter for the latest products, deals, and updates.</SheetDescription>
+            <SheetDescription>
+              Subscribe to our newsletter for the latest products, deals, and
+              updates.
+            </SheetDescription>
           </SheetHeader>
           <div className="max-w-md mx-auto">
             {newsletterForm}
@@ -67,7 +89,9 @@ export function Newsletter({ className, buttonLabel = "Subscribe", showSheetView
   return (
     <div className={`space-y-4 ${className}`}>
       <h3 className="font-medium text-base">Stay Updated</h3>
-      <p className="text-sm text-muted-foreground">Subscribe to our newsletter for the latest products, deals, and updates.</p>
+      <p className="text-sm text-muted-foreground">
+        Subscribe to our newsletter for the latest products, deals, and updates.
+      </p>
       {newsletterForm}
       <div className="space-y-2 pt-2">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

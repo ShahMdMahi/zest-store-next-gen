@@ -16,8 +16,12 @@ export default function RegisterPage() {
             <UserPlus className="h-6 w-6 text-primary" />
           </div>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Welcome to Zest Store</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Enter your credentials to create your account</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          Welcome to Zest Store
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Enter your credentials to create your account
+        </p>
       </div>
       <RegisterForm />
     </div>

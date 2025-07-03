@@ -3,7 +3,15 @@
 import { ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -13,14 +21,14 @@ interface CartButtonProps {
 
 export function CartButton({ fallback }: CartButtonProps) {
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState(0); // In a real application, this would come from your cart state or API
+  const [cartItemCount] = useState(0); // In a real application, this would come from your cart state or API
   const [isClient, setIsClient] = useState(false);
 
   // Prevent hydration mismatch by waiting for client-side rendering
   useEffect(() => {
     setIsClient(true);
     // In a real app, you would fetch cart data here
-    // Example: fetchCartData().then(data => setCartItemCount(data.items.length));
+    // Example: fetchCartData().then(data => _(data.items.length));
   }, []);
 
   // Example empty cart state - in a real app you'd integrate with your cart system
@@ -34,10 +42,17 @@ export function CartButton({ fallback }: CartButtonProps) {
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
       <SheetTrigger asChild>
         {fallback || (
-          <Button variant="ghost" size="icon" aria-label="Shopping cart" className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Shopping cart"
+            className="relative"
+          >
             <ShoppingBag className="h-5 w-5" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium flex items-center justify-center text-primary-foreground">{cartItemCount}</span>
+              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium flex items-center justify-center text-primary-foreground">
+                {cartItemCount}
+              </span>
             )}
           </Button>
         )}
@@ -45,7 +60,11 @@ export function CartButton({ fallback }: CartButtonProps) {
       <SheetContent className="flex flex-col w-full sm:max-w-sm">
         <SheetHeader>
           <SheetTitle>Your Cart</SheetTitle>
-          <SheetDescription>{isEmpty ? "Your cart is empty" : `${cartItemCount} items in your cart`}</SheetDescription>
+          <SheetDescription>
+            {isEmpty
+              ? "Your cart is empty"
+              : `${cartItemCount} items in your cart`}
+          </SheetDescription>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto py-6">
@@ -53,8 +72,14 @@ export function CartButton({ fallback }: CartButtonProps) {
             <div className="flex flex-col items-center justify-center h-full text-center px-4">
               <ShoppingBag className="h-16 w-16 text-muted-foreground mb-4" />
               <h3 className="font-medium text-lg mb-1">Your cart is empty</h3>
-              <p className="text-sm text-muted-foreground mb-6">Start adding items to your cart to see them here.</p>
-              <Button asChild onClick={() => setCartOpen(false)} className="w-full sm:w-auto">
+              <p className="text-sm text-muted-foreground mb-6">
+                Start adding items to your cart to see them here.
+              </p>
+              <Button
+                asChild
+                onClick={() => setCartOpen(false)}
+                className="w-full sm:w-auto"
+              >
                 <Link href="/">Start Shopping</Link>
               </Button>
             </div>

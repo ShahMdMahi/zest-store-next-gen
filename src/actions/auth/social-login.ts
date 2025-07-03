@@ -3,7 +3,6 @@
 import { signIn } from "@/auth";
 import { logger } from "@/lib/logger";
 import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
 
 export type SocialLoginParams = {
   provider: "github" | "google";
@@ -18,7 +17,9 @@ export type SocialLoginResult = {
 /**
  * Server action for handling social login
  */
-export async function socialLogin(params: SocialLoginParams): Promise<SocialLoginResult> {
+export async function socialLogin(
+  params: SocialLoginParams,
+): Promise<SocialLoginResult> {
   try {
     const { provider, callbackUrl = "/" } = params;
 
@@ -39,7 +40,10 @@ export async function socialLogin(params: SocialLoginParams): Promise<SocialLogi
       throw error;
     }
 
-    logger.error(`Error during ${params.provider} social login:`, error as Error);
+    logger.error(
+      `Error during ${params.provider} social login:`,
+      error as Error,
+    );
 
     let errorMessage = "An unexpected error occurred during social login";
 

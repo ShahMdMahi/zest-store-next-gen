@@ -4,8 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { LogoutButton } from "@/components/auth/logout-button";
+import Image from "next/image";
 
 interface UserData {
   id: string;
@@ -62,24 +70,37 @@ export default function ProfilePage() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Your Profile</CardTitle>
-          <CardDescription>Manage your account details and preferences</CardDescription>
+          <CardDescription>
+            Manage your account details and preferences
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
             <div className="relative h-20 w-20 overflow-hidden rounded-full bg-muted">
               {userData.image ? (
-                <img src={userData.image} alt={userData.name || "User"} className="h-full w-full object-cover" />
+                <Image
+                  src={userData.image}
+                  alt={userData.name || "User"}
+                  className="h-full w-full object-cover"
+                  fill
+                />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
-                  <span className="text-2xl font-bold">{userData.name ? userData.name[0].toUpperCase() : "U"}</span>
+                  <span className="text-2xl font-bold">
+                    {userData.name ? userData.name[0].toUpperCase() : "U"}
+                  </span>
                 </div>
               )}
             </div>
             <div>
-              <h2 className="text-xl font-semibold">{userData.name || "User"}</h2>
+              <h2 className="text-xl font-semibold">
+                {userData.name || "User"}
+              </h2>
               <p className="text-sm text-muted-foreground">{userData.email}</p>
               <div className="mt-1">
-                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary/10 text-primary">{userData.role}</span>
+                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary/10 text-primary">
+                  {userData.role}
+                </span>
               </div>
             </div>
           </div>
@@ -87,7 +108,9 @@ export default function ProfilePage() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1">
               <h3 className="text-sm font-medium">Account Information</h3>
-              <p className="text-sm text-muted-foreground">Your account details and preferences</p>
+              <p className="text-sm text-muted-foreground">
+                Your account details and preferences
+              </p>
               <div className="rounded-md border p-4 mt-2">
                 <dl className="space-y-3 text-sm">
                   <div>
@@ -100,7 +123,9 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <dt className="text-xs text-muted-foreground">Role</dt>
-                    <dd className="capitalize">{userData.role.toLowerCase()}</dd>
+                    <dd className="capitalize">
+                      {userData.role.toLowerCase()}
+                    </dd>
                   </div>
                 </dl>
               </div>
@@ -108,7 +133,9 @@ export default function ProfilePage() {
 
             <div className="space-y-1">
               <h3 className="text-sm font-medium">Account Security</h3>
-              <p className="text-sm text-muted-foreground">Manage your password and account security</p>
+              <p className="text-sm text-muted-foreground">
+                Manage your password and account security
+              </p>
               <div className="rounded-md border p-4 mt-2">
                 <dl className="space-y-3 text-sm">
                   <div>

@@ -1,7 +1,14 @@
 import { Layers, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/common/theme-toggle";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import { RootNavbarMobile } from "@/components/root/navbar-mobile";
 import { CartButton } from "@/components/root/cart-button";
 import { ProfileButton } from "@/components/common/profile-button";
@@ -21,7 +28,9 @@ export function RootNavbar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
               <Layers className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
             </div>
-            <span className="font-semibold text-lg inline-block group-hover:text-primary transition-colors">Zest Store</span>
+            <span className="font-semibold text-lg inline-block group-hover:text-primary transition-colors">
+              Zest Store
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -32,10 +41,18 @@ export function RootNavbar() {
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] grid-cols-1 sm:grid-cols-2">
                     {categories.map((category) => (
-                      <NavigationMenuLink key={category.title} asChild className="block select-none space-y-1 rounded-md p-3 hover:bg-accent hover:text-accent-foreground">
+                      <NavigationMenuLink
+                        key={category.title}
+                        asChild
+                        className="block select-none space-y-1 rounded-md p-3 hover:bg-accent hover:text-accent-foreground"
+                      >
                         <Link href={category.href}>
-                          <div className="text-sm font-medium">{category.title}</div>
-                          <p className="text-sm leading-snug text-muted-foreground">{category.description}</p>
+                          <div className="text-sm font-medium">
+                            {category.title}
+                          </div>
+                          <p className="text-sm leading-snug text-muted-foreground">
+                            {category.description}
+                          </p>
                         </Link>
                       </NavigationMenuLink>
                     ))}
@@ -77,7 +94,9 @@ export function RootNavbar() {
               <Button variant="ghost" size="icon" aria-label="Shopping cart">
                 <div className="relative">
                   <ShoppingBag className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium flex items-center justify-center text-primary-foreground">0</span>
+                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium flex items-center justify-center text-primary-foreground">
+                    0
+                  </span>
                 </div>
               </Button>
             }

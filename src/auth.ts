@@ -102,7 +102,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.role = (user as unknown as { role: Role }).role;
           token.createdAt = (user as unknown as { createdAt: Date }).createdAt;
           token.updatedAt = (user as unknown as { updatedAt: Date }).updatedAt;
-          token.emailVerified = (user as unknown as { emailVerified?: Date }).emailVerified;
+          token.emailVerified = (
+            user as unknown as { emailVerified?: Date }
+          ).emailVerified;
           token.image = user.image;
           token.tokenLastValidated = Date.now();
 
@@ -122,7 +124,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const tokenValidationInterval = 60 * 60 * 1000; // 1 hour
 
         // Refresh user data if token hasn't been validated recently or on update trigger
-        if (trigger === "update" || !token.tokenLastValidated || (typeof token.tokenLastValidated === "number" && currentTime - token.tokenLastValidated > tokenValidationInterval)) {
+        if (
+          trigger === "update" ||
+          !token.tokenLastValidated ||
+          (typeof token.tokenLastValidated === "number" &&
+            currentTime - token.tokenLastValidated > tokenValidationInterval)
+        ) {
           if (!token.sub) {
             logger.warn("No sub in token, returning null");
             return null;
@@ -180,7 +187,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           session.user = user;
 
           // Add additional metadata
-          (session.user as any).sessionLastValidated = Date.now();
+          // Define a more specific type instead of using 'any'
+          (
+            session.user as { sessionLastValidated?: number }
+          ).sessionLastValidated = Date.now();
         }
 
         return session;
@@ -208,7 +218,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       // Allow access to auth pages for non-logged in users
-      if (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/register")) {
+      if (
+        pathname.startsWith("/auth/login") ||
+        pathname.startsWith("/auth/register")
+      ) {
         return true;
       }
 

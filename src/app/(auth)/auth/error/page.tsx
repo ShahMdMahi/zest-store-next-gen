@@ -2,7 +2,14 @@ import { Metadata } from "next";
 import { AlertCircle, ArrowLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
@@ -10,15 +17,24 @@ export const metadata: Metadata = {
   description: "An error occurred during authentication",
 };
 
-export default function ErrorPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+export default function ErrorPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   // Get error message from search params, fallback to generic message
-  const error = typeof searchParams.error === "string" ? searchParams.error : "An unexpected error occurred";
+  const error =
+    typeof searchParams.error === "string"
+      ? searchParams.error
+      : "An unexpected error occurred";
 
   // Map known error codes to user-friendly messages
   const errorMessages: Record<string, string> = {
     CredentialsSignin: "The email or password you entered is incorrect.",
-    OAuthAccountNotLinked: "This account is already linked to a different authentication provider.",
-    AccessDenied: "Access denied. You don't have permission to access this resource.",
+    OAuthAccountNotLinked:
+      "This account is already linked to a different authentication provider.",
+    AccessDenied:
+      "Access denied. You don't have permission to access this resource.",
     Configuration: "There is a problem with the authentication configuration.",
     Default: "An unexpected authentication error occurred.",
   };
@@ -33,13 +49,19 @@ export default function ErrorPage({ searchParams }: { searchParams: { [key: stri
             <AlertCircle className="h-6 w-6 text-destructive" />
           </div>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Authentication Error</h1>
-        <p className="mt-2 text-sm text-muted-foreground">There was a problem with your authentication request</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          Authentication Error
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          There was a problem with your authentication request
+        </p>
       </div>
 
       <Card className="border border-border shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-semibold">Unable to Sign In</CardTitle>
+          <CardTitle className="text-xl font-semibold">
+            Unable to Sign In
+          </CardTitle>
           <CardDescription>Please review the error below</CardDescription>
         </CardHeader>
         <CardContent>
