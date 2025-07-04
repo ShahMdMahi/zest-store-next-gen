@@ -1,7 +1,6 @@
 "use server";
 
 import { prisma } from "@/prisma";
-import { signIn } from "@/auth";
 import { logger } from "@/lib/logger";
 import { hashPassword } from "@/lib/password-utils";
 import { generateToken } from "@/lib/auth-utils";
@@ -81,15 +80,12 @@ export async function register(
     // Send verification email
     await sendAccountVerificationEmail(email, name, verificationToken, "24 hours");
 
-    // Sign in the user after registration
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    // No longer signing in the user automatically after registration
+    // Users will need to verify their email and log in manually
 
     return {
-      message: "Registration successful! Please check your email to verify your account.",
+      message:
+        "Registration successful! Please check your email to verify your account before logging in.",
       success: true,
     };
   } catch (error) {

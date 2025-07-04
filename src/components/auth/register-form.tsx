@@ -97,14 +97,14 @@ export function RegisterForm() {
     });
   };
 
-  // Handle successful registration and redirect
+  // Handle successful registration and redirect to login page
   useEffect(() => {
     if (state.success && !state.errors) {
-      toast.success("Registration successful!");
-      router.push(callbackUrl);
+      toast.success("Registration successful! Please check your email to verify your account.");
+      router.push("/auth/login");
       router.refresh();
     }
-  }, [state.success, state.errors, router, callbackUrl]);
+  }, [state.success, state.errors, router]);
 
   // Handle social login with server action
   const handleSocialLogin = async (provider: "github" | "google") => {
