@@ -9,6 +9,7 @@ export async function middleware(request: NextRequest) {
   // Get the session from the server
   const session = await auth();
   const isAuthenticated = !!session?.user;
+  console.log("Session:", session);
 
   // Admin routes that require admin role
   const isAdminRoute = pathname.startsWith("/admin");

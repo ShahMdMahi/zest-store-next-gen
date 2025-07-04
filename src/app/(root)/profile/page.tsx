@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LogoutButton } from "@/components/auth/logout-button";
+import SessionManagement from "@/components/auth/session-management";
 import Image from "next/image";
 
 interface UserData {
@@ -150,6 +151,11 @@ export default function ProfilePage() {
                 </dl>
               </div>
             </div>
+          </div>
+
+          {/* Session Management */}
+          <div className="mt-8">
+            <SessionManagement />
           </div>
         </CardContent>
         <CardFooter>
