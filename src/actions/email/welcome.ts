@@ -3,6 +3,7 @@
 import sendMail from "@/lib/nodemailer";
 import { render } from "@react-email/render";
 import { WelcomeEmail } from "@/lib/email-templates";
+import { logger } from "@/lib/logger";
 
 const SUBJECT = "Welcome to Zest Store!";
 
@@ -12,7 +13,8 @@ const sendWelcomeEmail = async (to: string, name: string) => {
     const info = await sendMail(to, SUBJECT, emailContent);
     return info;
   } catch (error) {
-    console.error("Error sending welcome email:", error);
+    logger.error("Error sending welcome email:", error as Error);
+    throw error; // Rethrow the error to be handled by the caller
   }
 };
 

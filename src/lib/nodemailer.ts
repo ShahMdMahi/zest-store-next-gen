@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { logger } from "@/lib/logger";
 
 const host = process.env.EMAIL_SMTP_HOST!;
 const port = parseInt(process.env.EMAIL_SMTP_PORT!, 10);
@@ -27,10 +28,15 @@ const sendMail = async (to: string, subject: string, html: string) => {
       subject,
       html,
     });
-    console.log("Email sent:", info.response);
+    logger.info("Email sent", {
+      to,
+      subject,
+      messageId: info.messageId,
+      response: info.response,
+    });
     return info;
   } catch (error) {
-    console.error("Error sending email:", error);
+    logger.error("Error sending email:", error as Error);
   }
 };
 

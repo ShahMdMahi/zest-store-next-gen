@@ -3,6 +3,7 @@
 import sendMail from "@/lib/nodemailer";
 import { render } from "@react-email/render";
 import { ResetPasswordEmail } from "@/lib/email-templates";
+import { logger } from "@/lib/logger";
 
 const SUBJECT = "Reset Your Password - Zest Store";
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -23,9 +24,9 @@ const sendResetPasswordEmail = async (
       })
     );
     const info = await sendMail(to, SUBJECT, emailContent);
-    return info;
   } catch (error) {
-    console.error("Error sending reset password email:", error);
+    logger.error("Error sending reset password email:", error as Error);
+    throw error; // Rethrow the error to be handled by the caller
   }
 };
 

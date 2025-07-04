@@ -2,6 +2,7 @@
 
 import { prisma } from "@/prisma";
 import { logger } from "@/lib/logger";
+import { generateToken } from "@/lib/auth-utils";
 
 export type VerifyAccountState = {
   errors?: {
@@ -83,9 +84,60 @@ export async function verifyAccount(token: string): Promise<VerifyAccountState> 
 
 export async function resendVerificationEmail(email: string): Promise<VerifyAccountState> {
   try {
-    // Logic to resend verification email
-    // This will require additional implementation for generating a new token
-    // and sending the email
+    if (!email) {
+      return {
+        errors: {
+          _form: ["Email is required"],
+        },
+        message: "Email is required",
+        success: false,
+      };
+    }
+
+    // Find the user by email
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      // Don't reveal that the user doesn't exist for security
+      return {
+        message: "If an account with this email exists, a verification link has been sent.",
+        success: true,
+      };
+    }
+
+    // If the email is already verified, no need to send a verification email
+    if (user.emailVerified) {
+      return {
+        message: "Your email is already verified. You can log in to your account.",
+        success: true,
+      };
+    }
+
+    // Generate a new verification token
+    const verificationToken = await generateToken();
+    const expiryTime = new Date();
+    expiryTime.setHours(expiryTime.getHours() + 24); // Token valid for 24 hours
+
+    // Update the user with the new verification token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        verificationToken,
+        verificationTokenExpiry: expiryTime,
+      },
+    });
+
+    // Import here to avoid circular dependencies
+    const sendAccountVerificationEmail = (await import("@/actions/email"))
+      .sendAccountVerificationEmail;
+
+    // Send the verification email
+    await sendAccountVerificationEmail(email, user.name || "User", verificationToken, "24 hours");
+
+    logger.info(`Verification email resent to user: ${user.id}`);
+
     return {
       message: "Verification email sent. Please check your inbox.",
       success: true,

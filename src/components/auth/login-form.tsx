@@ -153,9 +153,21 @@ export function LoginForm() {
       <CardContent>
         {state.errors?._form && (
           <Alert variant="destructive" className="mb-4">
-            <AlertDescription>{state.errors._form.join(", ")}</AlertDescription>
+            <AlertDescription>
+              {state.errors._form.join(", ")}
+              {state.errors._form[0]?.includes("verify your email") && (
+                <div className="mt-2">
+                  <Link
+                    href="/auth/resend-verification"
+                    className="text-sm font-medium text-white underline underline-offset-4"
+                  >
+                    Resend verification email
+                  </Link>
+                </div>
+              )}
+            </AlertDescription>
           </Alert>
-        )}{" "}
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <FormField

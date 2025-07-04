@@ -31,6 +31,7 @@ model Account {
   @@map("accounts")
 }
 
+// Current implementation doesn't uses this Session Model currently we're using the JwtSession Model
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")

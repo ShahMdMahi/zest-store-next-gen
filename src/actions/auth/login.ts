@@ -84,6 +84,19 @@ export async function login(
       };
     }
 
+    // Check if email has been verified
+    if (!user.emailVerified) {
+      logger.warn(`Login attempt for unverified email: ${email}`);
+      return {
+        errors: {
+          _form: ["Please verify your email before logging in"],
+        },
+        message:
+          "Please verify your email before logging in. Check your inbox for the verification link or request a new one.",
+        success: false,
+      };
+    }
+
     // Verify the password
     const isPasswordValid = await verifyPassword(password, user.password);
     if (!isPasswordValid) {
