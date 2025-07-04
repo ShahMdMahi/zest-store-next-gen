@@ -15,9 +15,7 @@ const COOLDOWN_PERIOD_MS = 30 * 60 * 1000;
  * Record a failed login attempt for a user
  * Returns true if the account is now locked (too many failed attempts)
  */
-export async function recordFailedLoginAttempt(
-  email: string,
-): Promise<boolean> {
+export async function recordFailedLoginAttempt(email: string): Promise<boolean> {
   try {
     const user = await prisma.user.findUnique({
       where: { email },

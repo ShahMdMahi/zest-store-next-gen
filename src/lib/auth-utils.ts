@@ -1,10 +1,18 @@
 import { User } from "@/prisma/client";
 import { logger } from "@/lib/logger";
 import { auth } from "@/auth";
+import crypto from "crypto";
 
 /**
  * Authentication utility functions
  */
+
+/**
+ * Generate a secure random token for email verification or password reset
+ */
+export async function generateToken(length: number = 32): Promise<string> {
+  return crypto.randomBytes(length).toString("hex");
+}
 
 /**
  * Validates if a user meets the required criteria

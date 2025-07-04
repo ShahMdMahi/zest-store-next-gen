@@ -56,8 +56,8 @@ export default function ProfilePage() {
 
   if (loading || status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="border-primary h-12 w-12 animate-spin rounded-full border-t-2 border-b-2"></div>
       </div>
     );
   }
@@ -67,17 +67,15 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-8">
+    <div className="container mx-auto max-w-4xl py-8">
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Your Profile</CardTitle>
-          <CardDescription>
-            Manage your account details and preferences
-          </CardDescription>
+          <CardDescription>Manage your account details and preferences</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
-            <div className="relative h-20 w-20 overflow-hidden rounded-full bg-muted">
+            <div className="bg-muted relative h-20 w-20 overflow-hidden rounded-full">
               {userData.image ? (
                 <Image
                   src={userData.image}
@@ -86,7 +84,7 @@ export default function ProfilePage() {
                   fill
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
+                <div className="bg-primary/10 text-primary flex h-full w-full items-center justify-center">
                   <span className="text-2xl font-bold">
                     {userData.name ? userData.name[0].toUpperCase() : "U"}
                   </span>
@@ -94,12 +92,10 @@ export default function ProfilePage() {
               )}
             </div>
             <div>
-              <h2 className="text-xl font-semibold">
-                {userData.name || "User"}
-              </h2>
-              <p className="text-sm text-muted-foreground">{userData.email}</p>
+              <h2 className="text-xl font-semibold">{userData.name || "User"}</h2>
+              <p className="text-muted-foreground text-sm">{userData.email}</p>
               <div className="mt-1">
-                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary/10 text-primary">
+                <span className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
                   {userData.role}
                 </span>
               </div>
@@ -109,24 +105,20 @@ export default function ProfilePage() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1">
               <h3 className="text-sm font-medium">Account Information</h3>
-              <p className="text-sm text-muted-foreground">
-                Your account details and preferences
-              </p>
-              <div className="rounded-md border p-4 mt-2">
+              <p className="text-muted-foreground text-sm">Your account details and preferences</p>
+              <div className="mt-2 rounded-md border p-4">
                 <dl className="space-y-3 text-sm">
                   <div>
-                    <dt className="text-xs text-muted-foreground">User ID</dt>
+                    <dt className="text-muted-foreground text-xs">User ID</dt>
                     <dd>{userData.id}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-muted-foreground">Email</dt>
+                    <dt className="text-muted-foreground text-xs">Email</dt>
                     <dd>{userData.email}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs text-muted-foreground">Role</dt>
-                    <dd className="capitalize">
-                      {userData.role.toLowerCase()}
-                    </dd>
+                    <dt className="text-muted-foreground text-xs">Role</dt>
+                    <dd className="capitalize">{userData.role.toLowerCase()}</dd>
                   </div>
                 </dl>
               </div>
@@ -134,13 +126,13 @@ export default function ProfilePage() {
 
             <div className="space-y-1">
               <h3 className="text-sm font-medium">Account Security</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Manage your password and account security
               </p>
-              <div className="rounded-md border p-4 mt-2">
+              <div className="mt-2 rounded-md border p-4">
                 <dl className="space-y-3 text-sm">
                   <div>
-                    <dt className="text-xs text-muted-foreground">Password</dt>
+                    <dt className="text-muted-foreground text-xs">Password</dt>
                     <dd>••••••••</dd>
                   </div>
                   <div className="pt-2">

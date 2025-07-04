@@ -17,9 +17,7 @@ export type SocialLoginResult = {
 /**
  * Server action for handling social login
  */
-export async function socialLogin(
-  params: SocialLoginParams,
-): Promise<SocialLoginResult> {
+export async function socialLogin(params: SocialLoginParams): Promise<SocialLoginResult> {
   try {
     const { provider, callbackUrl = "/" } = params;
 
@@ -40,10 +38,7 @@ export async function socialLogin(
       throw error;
     }
 
-    logger.error(
-      `Error during ${params.provider} social login:`,
-      error as Error,
-    );
+    logger.error(`Error during ${params.provider} social login:`, error as Error);
 
     let errorMessage = "An unexpected error occurred during social login";
 

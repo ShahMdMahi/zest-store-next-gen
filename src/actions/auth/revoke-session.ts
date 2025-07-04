@@ -2,10 +2,7 @@
 
 import { auth } from "@/auth";
 import { logger } from "@/lib/logger";
-import {
-  revokeJwtSession,
-  revokeAllOtherJwtSessions,
-} from "@/lib/jwt-session-store";
+import { revokeJwtSession, revokeAllOtherJwtSessions } from "@/lib/jwt-session-store";
 
 /**
  * Types for session revocation responses
@@ -19,9 +16,7 @@ export type SessionRevocationResult = {
  * Revokes a specific JWT session by its ID
  * @param sessionId The ID of the session to revoke
  */
-export async function revokeSession(
-  sessionId: string,
-): Promise<SessionRevocationResult> {
+export async function revokeSession(sessionId: string): Promise<SessionRevocationResult> {
   try {
     // Get the current user's session
     const session = await auth();
@@ -49,8 +44,7 @@ export async function revokeSession(
     } else {
       return {
         success: false,
-        message:
-          "Failed to revoke session - session may not exist or may not belong to you",
+        message: "Failed to revoke session - session may not exist or may not belong to you",
       };
     }
   } catch (error) {
@@ -79,8 +73,7 @@ export async function revokeAllOtherSessions(): Promise<SessionRevocationResult>
     }
 
     // Get the current session ID
-    const currentSessionId = (session.user as { sessionToken?: string })
-      .sessionToken;
+    const currentSessionId = (session.user as { sessionToken?: string }).sessionToken;
 
     if (!currentSessionId) {
       return {
@@ -90,10 +83,7 @@ export async function revokeAllOtherSessions(): Promise<SessionRevocationResult>
     }
 
     // Revoke all other JWT sessions using our custom implementation
-    const count = await revokeAllOtherJwtSessions(
-      currentSessionId,
-      session.user.id,
-    );
+    const count = await revokeAllOtherJwtSessions(currentSessionId, session.user.id);
 
     logger.info(`All other JWT sessions revoked for user: ${session.user.id}`, {
       userId: session.user.id,

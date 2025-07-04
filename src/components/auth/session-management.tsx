@@ -60,7 +60,7 @@ export default function SessionManagement() {
         const result = await revokeSession(sessionId);
         if (result.success) {
           // Remove the revoked session from the list
-          setSessions(sessions.filter((s) => s.id !== sessionId));
+          setSessions(sessions.filter(s => s.id !== sessionId));
           toast.success(result.message);
         } else {
           toast.error(result.message);
@@ -78,7 +78,7 @@ export default function SessionManagement() {
         const result = await revokeAllOtherSessions();
         if (result.success) {
           // Keep only the current session in the list
-          setSessions(sessions.filter((s) => s.isCurrentSession));
+          setSessions(sessions.filter(s => s.isCurrentSession));
           toast.success(result.message);
         } else {
           toast.error(result.message);
@@ -106,9 +106,7 @@ export default function SessionManagement() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Active Sessions</CardTitle>
-          <CardDescription className="text-destructive">
-            {error}
-          </CardDescription>
+          <CardDescription className="text-destructive">{error}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -118,34 +116,32 @@ export default function SessionManagement() {
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Active Sessions</CardTitle>
-        <CardDescription>
-          Manage your currently active sessions across devices
-        </CardDescription>
+        <CardDescription>Manage your currently active sessions across devices</CardDescription>
       </CardHeader>
       <CardContent>
         {sessions.length === 0 ? (
           <p className="text-muted-foreground">No active sessions found</p>
         ) : (
           <div className="space-y-4">
-            {sessions.map((session) => (
+            {sessions.map(session => (
               <div
                 key={session.id}
-                className="flex items-center justify-between p-4 border rounded-lg"
+                className="flex items-center justify-between rounded-lg border p-4"
               >
                 <div className="space-y-1">
                   <p className="font-medium">
                     {session.deviceInfo?.browser || "Unknown"} on{" "}
                     {session.deviceInfo?.os || "Unknown"}
                     {session.isCurrentSession && (
-                      <span className="ml-2 px-2 py-0.5 text-xs bg-primary/10 text-primary rounded-full">
+                      <span className="bg-primary/10 text-primary ml-2 rounded-full px-2 py-0.5 text-xs">
                         Current Session
                       </span>
                     )}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Created: {formatDate(session.createdAt)}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Last active: {formatDate(session.lastUsed)}
                   </p>
                 </div>
@@ -191,10 +187,7 @@ export default function SessionManagement() {
         <Button
           variant="destructive"
           onClick={handleRevokeAll}
-          disabled={
-            isPending ||
-            sessions.filter((s) => !s.isCurrentSession).length === 0
-          }
+          disabled={isPending || sessions.filter(s => !s.isCurrentSession).length === 0}
         >
           Revoke All Other Sessions
         </Button>

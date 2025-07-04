@@ -53,19 +53,15 @@ export default {
           });
 
           if (!user) {
-            logger.warn(
-              `Login attempt with email not found: ${credentials.email}`,
-            );
+            logger.warn(`Login attempt with email not found: ${credentials.email}`);
             return null;
           }
 
           // Handle users without passwords (OAuth users)
           if (!user.password) {
-            logger.warn(
-              `Password login attempt for OAuth user: ${credentials.email}`,
-            );
+            logger.warn(`Password login attempt for OAuth user: ${credentials.email}`);
             throw new Error(
-              "This account cannot use password login. Please use the provider you signed up with.",
+              "This account cannot use password login. Please use the provider you signed up with."
             );
           }
 
@@ -76,15 +72,10 @@ export default {
           }
 
           // Verify password
-          const passwordMatch = await bcrypt.compare(
-            credentials.password,
-            user.password,
-          );
+          const passwordMatch = await bcrypt.compare(credentials.password, user.password);
 
           if (!passwordMatch) {
-            logger.warn(
-              `Failed login attempt (password mismatch): ${credentials.email}`,
-            );
+            logger.warn(`Failed login attempt (password mismatch): ${credentials.email}`);
             return null;
           }
 

@@ -11,15 +11,10 @@ class Logger {
   private enabled: boolean;
 
   constructor() {
-    this.enabled =
-      process.env.NODE_ENV !== "production" || process.env.DEBUG === "true";
+    this.enabled = process.env.NODE_ENV !== "production" || process.env.DEBUG === "true";
   }
 
-  private formatMessage(
-    level: LogLevel,
-    message: string,
-    metadata?: LogMetadata,
-  ): string {
+  private formatMessage(level: LogLevel, message: string, metadata?: LogMetadata): string {
     const timestamp = new Date().toISOString();
     const metadataStr = metadata ? ` ${JSON.stringify(metadata)}` : "";
     return `[${timestamp}] [${level.toUpperCase()}] ${message}${metadataStr}`;
@@ -52,7 +47,7 @@ class Logger {
       this.formatMessage("error", message, {
         ...metadata,
         error: errorDetails,
-      }),
+      })
     );
   }
 }

@@ -9,17 +9,15 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="w-full max-w-md mx-auto py-6 sm:py-8 md:py-12">
+    <div className="mx-auto w-full max-w-md py-6 sm:py-8 md:py-12">
       <div className="mb-8 text-center">
-        <div className="flex justify-center mb-6">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
-            <Layers className="h-6 w-6 text-primary" />
+        <div className="mb-6 flex justify-center">
+          <div className="bg-primary/10 ring-primary/20 flex h-12 w-12 items-center justify-center rounded-full ring-1">
+            <Layers className="text-primary h-6 w-6" />
           </div>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-          Welcome back
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Welcome back</h1>
+        <p className="text-muted-foreground mt-2 text-sm">
           Enter your credentials to access your account
         </p>
       </div>

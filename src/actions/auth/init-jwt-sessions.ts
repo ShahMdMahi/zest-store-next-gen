@@ -1,9 +1,6 @@
 "use server";
 
-import {
-  setupJwtSessionTable,
-  cleanupOldJwtSessions,
-} from "@/lib/jwt-session-store";
+import { setupJwtSessionTable, cleanupOldJwtSessions } from "@/lib/jwt-session-store";
 import { logger } from "@/lib/logger";
 
 /**

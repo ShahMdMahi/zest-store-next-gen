@@ -10,16 +10,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Eye,
-  EyeOff,
-  Github,
-  Loader2,
-  LockKeyhole,
-  Mail,
-  User,
-  UserPlus,
-} from "lucide-react";
+import { Eye, EyeOff, Github, Loader2, LockKeyhole, Mail, User, UserPlus } from "lucide-react";
 
 import {
   Form,
@@ -50,22 +41,21 @@ const registerFormSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .refine((password) => /[A-Z]/.test(password), {
+      .refine(password => /[A-Z]/.test(password), {
         message: "Password must contain at least one uppercase letter",
       })
-      .refine((password) => /[a-z]/.test(password), {
+      .refine(password => /[a-z]/.test(password), {
         message: "Password must contain at least one lowercase letter",
       })
-      .refine((password) => /[0-9]/.test(password), {
+      .refine(password => /[0-9]/.test(password), {
         message: "Password must contain at least one number",
       })
-      .refine(
-        (password) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
-        { message: "Password must contain at least one special character" },
-      ),
+      .refine(password => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password), {
+        message: "Password must contain at least one special character",
+      }),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
@@ -78,11 +68,7 @@ function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const isDisabled = pending || isSubmitting;
 
   return (
-    <Button
-      type="submit"
-      className="w-full transition-all"
-      disabled={isDisabled}
-    >
+    <Button type="submit" className="w-full transition-all" disabled={isDisabled}>
       {isDisabled ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -169,24 +155,22 @@ export function RegisterForm() {
       });
     } catch (error) {
       console.error(`${provider} login error:`, error);
-      toast.error(
-        `An error occurred with ${provider} login. Please try again.`,
-      );
+      toast.error(`An error occurred with ${provider} login. Please try again.`);
       setIsPending(false);
     }
   };
 
   return (
-    <Card className="w-full mx-auto border border-border shadow-sm">
+    <Card className="border-border mx-auto w-full border shadow-sm">
       <CardHeader className="space-y-1 pb-6">
-        <CardTitle className="text-xl sm:text-2xl font-semibold tracking-tight text-center">
+        <CardTitle className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
           Create an Account
         </CardTitle>
-        <CardDescription className="text-center text-muted-foreground">
+        <CardDescription className="text-muted-foreground text-center">
           Enter your details to create your account
         </CardDescription>
         {error && (
-          <p className="text-sm font-medium text-destructive text-center mt-2 animate-pulse">
+          <p className="text-destructive mt-2 animate-pulse text-center text-sm font-medium">
             {error === "CredentialsSignin"
               ? "Invalid email or password"
               : "An error occurred. Please try again."}
@@ -198,9 +182,9 @@ export function RegisterForm() {
           <Alert variant="destructive" className="mb-4">
             <AlertDescription>{state.errors._form.join(", ")}</AlertDescription>
           </Alert>
-        )}
+        )}{" "}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <FormField
               control={form.control}
               name="name"
@@ -214,7 +198,7 @@ export function RegisterForm() {
                     <Input
                       placeholder="Your Name"
                       autoComplete="name"
-                      className="focus:ring-1 focus:ring-primary"
+                      className="focus:ring-primary focus:ring-1"
                       {...field}
                     />
                   </FormControl>
@@ -242,7 +226,7 @@ export function RegisterForm() {
                       placeholder="your.email@example.com"
                       type="email"
                       autoComplete="email"
-                      className="focus:ring-1 focus:ring-primary"
+                      className="focus:ring-primary focus:ring-1"
                       {...field}
                     />
                   </FormControl>
@@ -271,14 +255,14 @@ export function RegisterForm() {
                         placeholder="••••••••"
                         type={showPassword ? "text" : "password"}
                         autoComplete="new-password"
-                        className="focus:ring-1 focus:ring-primary pr-10"
+                        className="focus:ring-primary pr-10 focus:ring-1"
                         {...field}
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground absolute top-0 right-0 h-full px-3 py-2"
                         onClick={() => setShowPassword(!showPassword)}
                         tabIndex={-1}
                       >
@@ -293,16 +277,136 @@ export function RegisterForm() {
                       </Button>
                     </div>
                   </FormControl>
-                  <FormDescription className="text-xs text-muted-foreground mt-1">
-                    8+ characters with uppercase, lowercase, number, and special
-                    character
-                  </FormDescription>
+                  {/* Display client-side validation errors immediately  */}
+                  {/* {form.formState.errors.password && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {form.formState.errors.password.message}
+                    </p>
+                  )} */}
+
+                  {/* Display server-side validation errors */}
                   {state.errors?.password && (
                     <FormMessage className="text-destructive">
                       {state.errors.password.join(", ")}
                     </FormMessage>
                   )}
                   <FormMessage />
+
+                  <div className="mt-2 space-y-1">
+                    <p className="text-muted-foreground text-xs">Password requirements:</p>
+                    <ul className="space-y-1 text-xs">
+                      <li
+                        className={`flex items-center ${field.value.length >= 8 ? "text-green-500" : "text-muted-foreground"}`}
+                      >
+                        {field.value.length >= 8 ? (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        At least 8 characters
+                      </li>
+                      <li
+                        className={`flex items-center ${/[A-Z]/.test(field.value) ? "text-green-500" : "text-muted-foreground"}`}
+                      >
+                        {/[A-Z]/.test(field.value) ? (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        At least one uppercase letter
+                      </li>
+                      <li
+                        className={`flex items-center ${/[a-z]/.test(field.value) ? "text-green-500" : "text-muted-foreground"}`}
+                      >
+                        {/[a-z]/.test(field.value) ? (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        At least one lowercase letter
+                      </li>
+                      <li
+                        className={`flex items-center ${/[0-9]/.test(field.value) ? "text-green-500" : "text-muted-foreground"}`}
+                      >
+                        {/[0-9]/.test(field.value) ? (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        At least one number
+                      </li>
+                      <li
+                        className={`flex items-center ${/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(field.value) ? "text-green-500" : "text-muted-foreground"}`}
+                      >
+                        {/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(field.value) ? (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg className="mr-1 size-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        At least one special character
+                      </li>
+                    </ul>
+                  </div>
                 </FormItem>
               )}
             />
@@ -322,17 +426,15 @@ export function RegisterForm() {
                         placeholder="••••••••"
                         type={showConfirmPassword ? "text" : "password"}
                         autoComplete="new-password"
-                        className="focus:ring-1 focus:ring-primary pr-10"
+                        className="focus:ring-primary pr-10 focus:ring-1"
                         {...field}
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:text-foreground"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
+                        className="text-muted-foreground hover:text-foreground absolute top-0 right-0 h-full px-3 py-2"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         tabIndex={-1}
                       >
                         {showConfirmPassword ? (
@@ -341,9 +443,7 @@ export function RegisterForm() {
                           <Eye className="h-4 w-4" aria-hidden="true" />
                         )}
                         <span className="sr-only">
-                          {showConfirmPassword
-                            ? "Hide password"
-                            : "Show password"}
+                          {showConfirmPassword ? "Hide password" : "Show password"}
                         </span>
                       </Button>
                     </div>
@@ -362,16 +462,16 @@ export function RegisterForm() {
               <Button
                 type="button"
                 variant="link"
-                className="px-0 text-sm font-medium text-primary underline-offset-4 hover:underline"
-                onClick={() => setShowPassword((prev) => !prev)}
+                className="text-primary px-0 text-sm font-medium underline-offset-4 hover:underline"
+                onClick={() => setShowPassword(prev => !prev)}
               >
                 {showPassword ? "Hide password" : "Show password"}
               </Button>
               <Button
                 type="button"
                 variant="link"
-                className="px-0 text-sm font-medium text-primary underline-offset-4 hover:underline"
-                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="text-primary px-0 text-sm font-medium underline-offset-4 hover:underline"
+                onClick={() => setShowConfirmPassword(prev => !prev)}
               >
                 {showConfirmPassword ? "Hide password" : "Show password"}
               </Button>
@@ -381,18 +481,16 @@ export function RegisterForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex flex-col space-y-4 pt-0 px-6 pb-6">
-        <div className="relative w-full my-2">
+      <CardFooter className="flex flex-col space-y-4 px-6 pt-0 pb-6">
+        <div className="relative my-2 w-full">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
+            <span className="border-border w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
-              Or continue with
-            </span>
+            <span className="bg-card text-muted-foreground px-2">Or continue with</span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3 w-full">
+        <div className="grid w-full grid-cols-2 gap-3">
           <Button
             variant="outline"
             className="w-full transition-all"
@@ -441,12 +539,12 @@ export function RegisterForm() {
             )}
           </Button>
         </div>
-        <div className="text-center pt-2">
-          <p className="text-sm text-muted-foreground">
+        <div className="pt-2 text-center">
+          <p className="text-muted-foreground text-sm">
             Already have an account?{" "}
             <Link
               href="/auth/login"
-              className="font-medium text-primary underline-offset-4 hover:underline transition-colors"
+              className="text-primary font-medium underline-offset-4 transition-colors hover:underline"
             >
               Sign in
             </Link>

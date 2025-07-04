@@ -60,7 +60,7 @@ export async function recordJwtSession(
   sessionId: string,
   userId: string,
   userAgent?: string,
-  ipAddress?: string,
+  ipAddress?: string
 ): Promise<void> {
   try {
     // Ensure userAgent and ipAddress are strings or null for SQL query
@@ -92,10 +92,7 @@ export async function updateJwtSession(sessionId: string): Promise<void> {
 }
 
 // Revoke a specific JWT session
-export async function revokeJwtSession(
-  sessionId: string,
-  userId: string,
-): Promise<boolean> {
+export async function revokeJwtSession(sessionId: string, userId: string): Promise<boolean> {
   try {
     // Mark the session as revoked
     const result = await prisma.$executeRaw`
@@ -115,7 +112,7 @@ export async function revokeJwtSession(
 // Revoke all JWT sessions for a user except the current one
 export async function revokeAllOtherJwtSessions(
   currentSessionId: string,
-  userId: string,
+  userId: string
 ): Promise<number> {
   try {
     // Mark all other sessions as revoked
@@ -176,9 +173,7 @@ export async function isJwtSessionRevoked(sessionId: string): Promise<boolean> {
 }
 
 // Cleanup old sessions (can be run periodically)
-export async function cleanupOldJwtSessions(
-  olderThanDays: number = 30,
-): Promise<number> {
+export async function cleanupOldJwtSessions(olderThanDays: number = 30): Promise<number> {
   try {
     const result = await prisma.$executeRaw`
       DELETE FROM jwt_sessions

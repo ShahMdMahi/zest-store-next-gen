@@ -22,21 +22,14 @@ export default async function ErrorPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // Await the searchParams promise to get the actual object
   const params = await searchParams;
-  // Get error message from search params, fallback to generic message
-  const error =
-    typeof params.error === "string"
-      ? params.error
-      : "An unexpected error occurred";
+  const error = typeof params.error === "string" ? params.error : "An unexpected error occurred";
 
   // Map known error codes to user-friendly messages
   const errorMessages: Record<string, string> = {
     CredentialsSignin: "The email or password you entered is incorrect.",
-    OAuthAccountNotLinked:
-      "This account is already linked to a different authentication provider.",
-    AccessDenied:
-      "Access denied. You don't have permission to access this resource.",
+    OAuthAccountNotLinked: "This account is already linked to a different authentication provider.",
+    AccessDenied: "Access denied. You don't have permission to access this resource.",
     Configuration: "There is a problem with the authentication configuration.",
     Default: "An unexpected authentication error occurred.",
   };
@@ -44,26 +37,22 @@ export default async function ErrorPage({
   const errorMessage = errorMessages[error] || errorMessages["Default"];
 
   return (
-    <div className="w-full max-w-md mx-auto py-6 sm:py-8 md:py-12">
+    <div className="mx-auto w-full max-w-md py-6 sm:py-8 md:py-12">
       <div className="mb-8 text-center">
-        <div className="flex justify-center mb-6">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10 ring-1 ring-destructive/30">
-            <AlertCircle className="h-6 w-6 text-destructive" />
+        <div className="mb-6 flex justify-center">
+          <div className="bg-destructive/10 ring-destructive/30 flex h-12 w-12 items-center justify-center rounded-full ring-1">
+            <AlertCircle className="text-destructive h-6 w-6" />
           </div>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-          Authentication Error
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Authentication Error</h1>
+        <p className="text-muted-foreground mt-2 text-sm">
           There was a problem with your authentication request
         </p>
       </div>
 
-      <Card className="border border-border shadow-sm">
+      <Card className="border-border border shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-semibold">
-            Unable to Sign In
-          </CardTitle>
+          <CardTitle className="text-xl font-semibold">Unable to Sign In</CardTitle>
           <CardDescription>Please review the error below</CardDescription>
         </CardHeader>
         <CardContent>
@@ -73,7 +62,7 @@ export default async function ErrorPage({
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row gap-3 pt-6">
+        <CardFooter className="flex flex-col gap-3 pt-6 sm:flex-row">
           <Button variant="outline" className="w-full sm:w-auto" asChild>
             <Link href="/auth/login">
               <ArrowLeft className="mr-2 h-4 w-4" /> Return to Login

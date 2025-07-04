@@ -10,15 +10,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Eye,
-  EyeOff,
-  Github,
-  Loader2,
-  LockKeyhole,
-  LogIn,
-  Mail,
-} from "lucide-react";
+import { Eye, EyeOff, Github, Loader2, LockKeyhole, LogIn, Mail } from "lucide-react";
 
 import {
   Form,
@@ -54,11 +46,7 @@ function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const isDisabled = pending || isSubmitting;
 
   return (
-    <Button
-      type="submit"
-      className="w-full transition-all"
-      disabled={isDisabled}
-    >
+    <Button type="submit" className="w-full transition-all" disabled={isDisabled}>
       {isDisabled ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -140,24 +128,22 @@ export function LoginForm() {
       });
     } catch (error) {
       console.error(`${provider} login error:`, error);
-      toast.error(
-        `An error occurred with ${provider} login. Please try again.`,
-      );
+      toast.error(`An error occurred with ${provider} login. Please try again.`);
       setIsPending(false);
     }
   };
 
   return (
-    <Card className="w-full mx-auto border border-border shadow-sm">
+    <Card className="border-border mx-auto w-full border shadow-sm">
       <CardHeader className="space-y-1 pb-6">
-        <CardTitle className="text-xl sm:text-2xl font-semibold tracking-tight text-center">
+        <CardTitle className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
           Login
         </CardTitle>
-        <CardDescription className="text-center text-muted-foreground">
+        <CardDescription className="text-muted-foreground text-center">
           Enter your credentials to access your account
         </CardDescription>
         {error && (
-          <p className="text-sm font-medium text-destructive text-center mt-2 animate-pulse">
+          <p className="text-destructive mt-2 animate-pulse text-center text-sm font-medium">
             {error === "CredentialsSignin"
               ? "Invalid email or password"
               : "An error occurred. Please try again."}
@@ -169,9 +155,9 @@ export function LoginForm() {
           <Alert variant="destructive" className="mb-4">
             <AlertDescription>{state.errors._form.join(", ")}</AlertDescription>
           </Alert>
-        )}
+        )}{" "}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <FormField
               control={form.control}
               name="email"
@@ -186,7 +172,7 @@ export function LoginForm() {
                       placeholder="your.email@example.com"
                       type="email"
                       autoComplete="email"
-                      className="focus:ring-1 focus:ring-primary"
+                      className="focus:ring-primary focus:ring-1"
                       {...field}
                     />
                   </FormControl>
@@ -204,24 +190,32 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center gap-1.5">
-                    <LockKeyhole className="h-3.5 w-3.5" />
-                    Password
-                  </FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel className="flex items-center gap-1.5">
+                      <LockKeyhole className="h-3.5 w-3.5" />
+                      Password
+                    </FormLabel>
+                    <Link
+                      href="/auth/forgot-password"
+                      className="text-primary text-xs font-medium underline-offset-4 transition-colors hover:underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
                   <FormControl>
                     <div className="relative">
                       <Input
                         placeholder="••••••••"
                         type={showPassword ? "text" : "password"}
                         autoComplete="current-password"
-                        className="focus:ring-1 focus:ring-primary pr-10"
+                        className="focus:ring-primary pr-10 focus:ring-1"
                         {...field}
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground absolute top-0 right-0 h-full px-3 py-2"
                         onClick={() => setShowPassword(!showPassword)}
                         tabIndex={-1}
                       >
@@ -249,18 +243,16 @@ export function LoginForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex flex-col space-y-4 pt-0 px-6 pb-6">
-        <div className="relative w-full my-2">
+      <CardFooter className="flex flex-col space-y-4 px-6 pt-0 pb-6">
+        <div className="relative my-2 w-full">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
+            <span className="border-border w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
-              Or continue with
-            </span>
+            <span className="bg-card text-muted-foreground px-2">Or continue with</span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3 w-full">
+        <div className="grid w-full grid-cols-2 gap-3">
           <Button
             variant="outline"
             className="w-full transition-all"
@@ -309,12 +301,12 @@ export function LoginForm() {
             )}
           </Button>
         </div>
-        <div className="text-center pt-2">
-          <p className="text-sm text-muted-foreground">
+        <div className="pt-2 text-center">
+          <p className="text-muted-foreground text-sm">
             Don&apos;t have an account?{" "}
             <Link
               href="/auth/register"
-              className="font-medium text-primary underline-offset-4 hover:underline transition-colors"
+              className="text-primary font-medium underline-offset-4 transition-colors hover:underline"
             >
               Sign up
             </Link>

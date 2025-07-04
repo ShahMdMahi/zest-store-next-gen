@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'MODERATOR', 'USER');
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'USER');
 
 -- CreateTable
 CREATE TABLE "accounts" (
@@ -45,6 +45,10 @@ CREATE TABLE "users" (
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "last_login" TIMESTAMP(3),
     "failed_logins" INTEGER NOT NULL DEFAULT 0,
+    "verification_token" TEXT,
+    "verification_token_expiry" TIMESTAMP(3),
+    "reset_token" TEXT,
+    "reset_token_expiry" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

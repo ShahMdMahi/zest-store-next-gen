@@ -1,29 +1,24 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Layers } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 export default function LoginLoading() {
   return (
-    <div className="w-full max-w-md mx-auto py-6 sm:py-8 md:py-12">
+    <div className="mx-auto w-full max-w-md py-6 sm:py-8 md:py-12">
       <div className="mb-8 text-center">
-        <div className="flex justify-center mb-6">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20">
-            <Layers className="h-6 w-6 text-primary animate-pulse" />
+        <div className="mb-6 flex justify-center">
+          <div className="bg-primary/10 ring-primary/20 flex h-12 w-12 items-center justify-center rounded-full ring-1">
+            <Layers className="text-primary h-6 w-6 animate-pulse" />
           </div>
         </div>
-        <Skeleton className="h-8 w-44 mx-auto mb-2" />
-        <Skeleton className="h-4 w-64 mx-auto" />
+        <Skeleton className="mx-auto mb-2 h-8 w-44" />
+        <Skeleton className="mx-auto h-4 w-64" />
       </div>
 
-      <Card className="border border-border shadow-sm">
-        <CardHeader className="pb-6 space-y-2">
-          <Skeleton className="h-6 w-24 mx-auto" />
-          <Skeleton className="h-4 w-52 mx-auto" />
+      <Card className="border-border border shadow-sm">
+        <CardHeader className="space-y-2 pb-6">
+          <Skeleton className="mx-auto h-6 w-24" />
+          <Skeleton className="mx-auto h-4 w-52" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -34,21 +29,21 @@ export default function LoginLoading() {
             <Skeleton className="h-4 w-16" />
             <Skeleton className="h-10 w-full" />
           </div>
-          <Skeleton className="h-10 w-full mt-2" />
+          <Skeleton className="mt-2 h-10 w-full" />
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4 pb-6 px-6">
-          <div className="relative w-full my-2">
-            <Skeleton className="h-px w-full my-3" />
+        <CardFooter className="flex flex-col space-y-4 px-6 pb-6">
+          <div className="relative my-2 w-full">
+            <Skeleton className="my-3 h-px w-full" />
             <div className="absolute inset-0 flex items-center justify-center">
               <Skeleton className="h-5 w-32" />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 w-full">
+          <div className="grid w-full grid-cols-2 gap-3">
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
           </div>
-          <div className="text-center pt-2">
-            <Skeleton className="h-4 w-44 mx-auto" />
+          <div className="pt-2 text-center">
+            <Skeleton className="mx-auto h-4 w-44" />
           </div>
         </CardFooter>
       </Card>

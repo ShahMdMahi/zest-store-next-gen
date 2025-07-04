@@ -23,10 +23,7 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Compare a password with a hash
  */
-export async function verifyPassword(
-  password: string,
-  hashedPassword: string,
-): Promise<boolean> {
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
   try {
     return await compare(password, hashedPassword);
   } catch (error) {

@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import { Search as SearchIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -55,7 +49,7 @@ export function Search({ className, mobileOnly = false }: SearchProps) {
           size="icon"
           className={cn(
             `${buttonClasses} ${className}`,
-            "relative overflow-hidden hover:bg-primary/5 transition-all duration-300",
+            "hover:bg-primary/5 relative overflow-hidden transition-all duration-300"
           )}
           aria-label="Search"
         >
@@ -65,15 +59,15 @@ export function Search({ className, mobileOnly = false }: SearchProps) {
       <SheetContent
         side="top"
         className={cn(
-          "h-auto pt-6 pb-8 px-4 rounded-b-xl border-t-0 shadow-lg",
-          "bg-gradient-to-b from-background to-background/95 backdrop-blur-sm",
+          "h-auto rounded-b-xl border-t-0 px-4 pt-6 pb-8 shadow-lg",
+          "from-background to-background/95 bg-gradient-to-b backdrop-blur-sm"
         )}
       >
         <div className="absolute top-2 right-2">
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full hover:bg-primary/10"
+            className="hover:bg-primary/10 h-8 w-8 rounded-full"
             onClick={() => setSearchOpen(false)}
           >
             <X className="h-4 w-4" />
@@ -81,34 +75,32 @@ export function Search({ className, mobileOnly = false }: SearchProps) {
         </div>
 
         <SheetHeader className="mb-5">
-          <SheetTitle className="text-center text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+          <SheetTitle className="from-primary to-primary/70 bg-gradient-to-r bg-clip-text text-center text-2xl font-bold text-transparent">
             Search Products
           </SheetTitle>
         </SheetHeader>
 
         <div
           className={cn(
-            "w-full max-w-2xl mx-auto transition-all duration-300",
-            isAnimating
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-4",
+            "mx-auto w-full max-w-2xl transition-all duration-300",
+            isAnimating ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
           )}
         >
           <form onSubmit={handleSearchSubmit} className="relative">
-            <div className="flex items-center gap-3 bg-background/50 p-1 rounded-xl border shadow-inner">
+            <div className="bg-background/50 flex items-center gap-3 rounded-xl border p-1 shadow-inner">
               <Input
                 type="search"
                 placeholder="Find what you're looking for..."
-                className="flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 text-lg pl-4"
+                className="flex-1 border-0 bg-transparent pl-4 text-lg shadow-none focus-visible:ring-0"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 autoFocus
               />
               <Button
                 type="submit"
-                className="rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg"
+                className="bg-primary hover:bg-primary/90 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
               >
-                <SearchIcon className="h-4 w-4 mr-2" />
+                <SearchIcon className="mr-2 h-4 w-4" />
                 Search
               </Button>
             </div>

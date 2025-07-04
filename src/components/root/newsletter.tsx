@@ -40,15 +40,15 @@ export function Newsletter({
   };
 
   const newsletterForm = (
-    <form className="flex flex-col sm:flex-row gap-2" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-2 sm:flex-row" onSubmit={handleSubmit}>
       <Input
         type="email"
         placeholder="Your email address"
-        className="rounded-md h-9"
+        className="h-9 rounded-md"
         required
         aria-label="Email for newsletter"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
       />
       <Button type="submit" className="h-9 whitespace-nowrap">
         {buttonLabel}
@@ -69,13 +69,12 @@ export function Newsletter({
           <SheetHeader className="mb-4">
             <SheetTitle>Stay Updated</SheetTitle>
             <SheetDescription>
-              Subscribe to our newsletter for the latest products, deals, and
-              updates.
+              Subscribe to our newsletter for the latest products, deals, and updates.
             </SheetDescription>
           </SheetHeader>
-          <div className="max-w-md mx-auto">
+          <div className="mx-auto max-w-md">
             {newsletterForm}
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-4">
+            <div className="text-muted-foreground mt-4 flex items-center gap-2 text-sm">
               <Mail className="h-4 w-4 shrink-0" />
               <span>contact@zeststore.com</span>
             </div>
@@ -88,13 +87,13 @@ export function Newsletter({
   // For embedded view (like in footer)
   return (
     <div className={`space-y-4 ${className}`}>
-      <h3 className="font-medium text-base">Stay Updated</h3>
-      <p className="text-sm text-muted-foreground">
+      <h3 className="text-base font-medium">Stay Updated</h3>
+      <p className="text-muted-foreground text-sm">
         Subscribe to our newsletter for the latest products, deals, and updates.
       </p>
       {newsletterForm}
       <div className="space-y-2 pt-2">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex items-center gap-2 text-sm">
           <Mail className="h-4 w-4 shrink-0" />
           <span>contact@zeststore.com</span>
         </div>

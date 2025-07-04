@@ -5,6 +5,8 @@ import { prisma } from "@/prisma";
 import { signIn } from "@/auth";
 import { logger } from "@/lib/logger";
 import { hashPassword } from "@/lib/password-utils";
+import { generateToken } from "@/lib/auth-utils";
+import { sendWelcomeEmail, sendAccountVerificationEmail } from "@/actions/email";
 
 // Registration validation schema
 const registerSchema = z
@@ -14,22 +16,21 @@ const registerSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .refine((password) => /[A-Z]/.test(password), {
+      .refine(password => /[A-Z]/.test(password), {
         message: "Password must contain at least one uppercase letter",
       })
-      .refine((password) => /[a-z]/.test(password), {
+      .refine(password => /[a-z]/.test(password), {
         message: "Password must contain at least one lowercase letter",
       })
-      .refine((password) => /[0-9]/.test(password), {
+      .refine(password => /[0-9]/.test(password), {
         message: "Password must contain at least one number",
       })
-      .refine(
-        (password) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
-        { message: "Password must contain at least one special character" },
-      ),
+      .refine(password => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password), {
+        message: "Password must contain at least one special character",
+      }),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
@@ -48,7 +49,7 @@ export type RegisterFormState = {
 
 export async function register(
   prevState: RegisterFormState,
-  formData: FormData,
+  formData: FormData
 ): Promise<RegisterFormState> {
   try {
     // Extract and validate form data
@@ -88,6 +89,11 @@ export async function register(
     // Hash the password
     const hashedPassword = await hashPassword(password);
 
+    // Generate verification token
+    const verificationToken = await generateToken();
+    const expiryTime = new Date();
+    expiryTime.setHours(expiryTime.getHours() + 24); // Token valid for 24 hours
+
     // Create the user
     const user = await prisma.user.create({
       data: {
@@ -96,11 +102,20 @@ export async function register(
         password: hashedPassword,
         role: "USER",
         failedLogins: 0,
+        emailVerified: null,
+        verificationToken,
+        verificationTokenExpiry: expiryTime,
       },
     });
 
     // Log the registration
     logger.info(`User registered: ${user.id}`, { userId: user.id });
+
+    // Send welcome email
+    await sendWelcomeEmail(email, name);
+
+    // Send verification email
+    await sendAccountVerificationEmail(email, name, verificationToken, "24 hours");
 
     // Sign in the user after registration
     await signIn("credentials", {
@@ -110,7 +125,7 @@ export async function register(
     });
 
     return {
-      message: "Registration successful! You are now logged in.",
+      message: "Registration successful! Please check your email to verify your account.",
       success: true,
     };
   } catch (error) {

@@ -80,7 +80,11 @@ async function getSessionIdentifier(userId: string): Promise<string | null> {
     // Instead, we'll use a hash of the user ID + some unique value as a session identifier
     // This will be used for tracking sessions in our custom implementation
     const cookieStore = await cookies();
-    const sessionTokenCookie = cookieStore.get(process.env.NODE_ENV === "production" ? "__Secure-next-auth.session-token" : "next-auth.session-token");
+    const sessionTokenCookie = cookieStore.get(
+      process.env.NODE_ENV === "production"
+        ? "__Secure-next-auth.session-token"
+        : "next-auth.session-token"
+    );
 
     if (!sessionTokenCookie?.value) {
       return null;
@@ -118,7 +122,8 @@ const callbacks: NextAuthConfig["callbacks"] = {
             // Record the new JWT session with user agent info
             const headersList = await headers();
             const userAgent = headersList.get("user-agent") || undefined;
-            const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
+            const ip =
+              headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
 
             await recordJwtSession(sessionIdentifier, user.id || "", userAgent, ip);
           }
@@ -153,7 +158,12 @@ const callbacks: NextAuthConfig["callbacks"] = {
       }
 
       // Refresh user data if token hasn't been validated recently or on update trigger
-      if (trigger === "update" || !token.tokenLastValidated || (typeof token.tokenLastValidated === "number" && currentTime - token.tokenLastValidated > tokenValidationInterval)) {
+      if (
+        trigger === "update" ||
+        !token.tokenLastValidated ||
+        (typeof token.tokenLastValidated === "number" &&
+          currentTime - token.tokenLastValidated > tokenValidationInterval)
+      ) {
         if (!token.sub) {
           logger.warn("No sub in token, returning null");
           return null;

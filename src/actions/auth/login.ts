@@ -31,7 +31,7 @@ export type LoginFormState = {
 
 export async function login(
   prevState: LoginFormState,
-  formData: FormData,
+  formData: FormData
 ): Promise<LoginFormState> {
   try {
     // Extract and validate form data
@@ -58,9 +58,7 @@ export async function login(
 
       return {
         errors: {
-          _form: [
-            `Too many failed attempts. Please try again in ${minutes} minutes.`,
-          ],
+          _form: [`Too many failed attempts. Please try again in ${minutes} minutes.`],
         },
         message: `Account temporarily locked. Try again in ${minutes} minutes.`,
         success: false,

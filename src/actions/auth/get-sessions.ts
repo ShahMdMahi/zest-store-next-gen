@@ -35,14 +35,13 @@ export async function getUserSessions(): Promise<{
     }
 
     // Get the current session ID for comparison
-    const currentSessionId = (session.user as { sessionToken?: string })
-      .sessionToken;
+    const currentSessionId = (session.user as { sessionToken?: string }).sessionToken;
 
     // Fetch all JWT sessions for this user using our custom implementation
     const jwtSessions = await getJwtSessions(session.user.id);
 
     // Format the sessions for display
-    const formattedSessions = jwtSessions.map((jwtSession) => {
+    const formattedSessions = jwtSessions.map(jwtSession => {
       // Parse browser info from user agent
       let browser = "Unknown";
       let os = "Unknown";
@@ -59,10 +58,7 @@ export async function getUserSessions(): Promise<{
         else if (jwtSession.userAgent.includes("Mac")) os = "MacOS";
         else if (jwtSession.userAgent.includes("Linux")) os = "Linux";
         else if (jwtSession.userAgent.includes("Android")) os = "Android";
-        else if (
-          jwtSession.userAgent.includes("iPhone") ||
-          jwtSession.userAgent.includes("iPad")
-        )
+        else if (jwtSession.userAgent.includes("iPhone") || jwtSession.userAgent.includes("iPad"))
           os = "iOS";
 
         if (jwtSession.userAgent.includes("Mobile")) device = "Mobile";
@@ -85,9 +81,7 @@ export async function getUserSessions(): Promise<{
     });
 
     // Filter out revoked sessions (we could show them with a revoked status if preferred)
-    const activeSessions = formattedSessions.filter(
-      (session) => !session.isRevoked,
-    );
+    const activeSessions = formattedSessions.filter(session => !session.isRevoked);
 
     return {
       sessions: activeSessions,

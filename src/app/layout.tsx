@@ -31,9 +31,7 @@ export default function MainLayout({
       {/* Initialize JWT session management */}
       <InitJwtSessions />
       <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <ThemeProvider>
             {children}
             <Toaster />

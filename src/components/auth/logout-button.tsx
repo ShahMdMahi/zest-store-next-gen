@@ -11,13 +11,7 @@ interface LogoutButtonProps {
   redirectUrl?: string;
   className?: string;
   children?: React.ReactNode;
-  variant?:
-    | "default"
-    | "destructive"
-    | "outline"
-    | "secondary"
-    | "ghost"
-    | "link";
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 }
 
 export function LogoutButton({
@@ -49,12 +43,7 @@ export function LogoutButton({
   };
 
   return (
-    <Button
-      variant={variant}
-      onClick={handleLogout}
-      disabled={isPending}
-      className={cn(className)}
-    >
+    <Button variant={variant} onClick={handleLogout} disabled={isPending} className={cn(className)}>
       {isPending ? "Signing out..." : children || "Sign out"}
     </Button>
   );

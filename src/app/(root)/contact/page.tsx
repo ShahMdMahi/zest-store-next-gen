@@ -8,31 +8,30 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="container max-w-3xl py-12">
-      <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
+      <h1 className="mb-6 text-3xl font-bold">Contact Us</h1>
 
       <div className="prose dark:prose-invert mb-8">
         <p>
-          We&apos;d love to hear from you! Whether you have a question about our
-          products, need help with an order, or just want to say hello, please
-          don&apos;t hesitate to reach out to us.
+          We&apos;d love to hear from you! Whether you have a question about our products, need help
+          with an order, or just want to say hello, please don&apos;t hesitate to reach out to us.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid gap-8 md:grid-cols-2">
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-medium mb-2">Email</h3>
+            <h3 className="mb-2 text-lg font-medium">Email</h3>
             <p className="text-muted-foreground">support@zeststore.com</p>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium mb-2">Phone</h3>
+            <h3 className="mb-2 text-lg font-medium">Phone</h3>
             <p className="text-muted-foreground">+1 (555) 123-4567</p>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium mb-2">Address</h3>
-            <address className="not-italic text-muted-foreground">
+            <h3 className="mb-2 text-lg font-medium">Address</h3>
+            <address className="text-muted-foreground not-italic">
               123 Zest Avenue
               <br />
               Suite 101
@@ -42,7 +41,7 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <h3 className="text-lg font-medium mb-2">Business Hours</h3>
+            <h3 className="mb-2 text-lg font-medium">Business Hours</h3>
             <p className="text-muted-foreground">
               Monday - Friday: 9am - 5pm PST
               <br />
@@ -52,14 +51,14 @@ export default function ContactPage() {
         </div>
 
         <form className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <label htmlFor="first-name" className="text-sm font-medium">
                 First name
               </label>
               <input
                 id="first-name"
-                className="w-full p-2 border rounded-md bg-background"
+                className="bg-background w-full rounded-md border p-2"
                 placeholder="Enter your first name"
               />
             </div>
@@ -69,7 +68,7 @@ export default function ContactPage() {
               </label>
               <input
                 id="last-name"
-                className="w-full p-2 border rounded-md bg-background"
+                className="bg-background w-full rounded-md border p-2"
                 placeholder="Enter your last name"
               />
             </div>
@@ -82,7 +81,7 @@ export default function ContactPage() {
             <input
               id="email"
               type="email"
-              className="w-full p-2 border rounded-md bg-background"
+              className="bg-background w-full rounded-md border p-2"
               placeholder="Enter your email"
             />
           </div>
@@ -93,7 +92,7 @@ export default function ContactPage() {
             </label>
             <input
               id="subject"
-              className="w-full p-2 border rounded-md bg-background"
+              className="bg-background w-full rounded-md border p-2"
               placeholder="Enter the subject"
             />
           </div>
@@ -105,14 +104,14 @@ export default function ContactPage() {
             <textarea
               id="message"
               rows={5}
-              className="w-full p-2 border rounded-md bg-background"
+              className="bg-background w-full rounded-md border p-2"
               placeholder="Enter your message"
             />
           </div>
 
           <button
             type="submit"
-            className="px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2"
           >
             Send Message
           </button>
