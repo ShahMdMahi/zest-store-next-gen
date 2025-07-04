@@ -1,62 +1,14 @@
 "use server";
 
-import { z } from "zod";
 import { prisma } from "@/prisma";
 import { logger } from "@/lib/logger";
 import { hashPassword } from "@/lib/password-utils";
 import { generateToken } from "@/lib/auth-utils";
 import { sendResetPasswordEmail } from "@/actions/email";
+import { resetPasswordSchema, requestResetSchema } from "@/lib/validation-schemas";
+import { RequestResetState, ResetPasswordState } from "@/lib/form-types";
 
-// Request password reset schema
-const requestResetSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
-
-// Reset password schema
-const resetPasswordSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .refine(password => /[A-Z]/.test(password), {
-        message: "Password must contain at least one uppercase letter",
-      })
-      .refine(password => /[a-z]/.test(password), {
-        message: "Password must contain at least one lowercase letter",
-      })
-      .refine(password => /[0-9]/.test(password), {
-        message: "Password must contain at least one number",
-      })
-      .refine(password => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password), {
-        message: "Password must contain at least one special character",
-      }),
-    confirmPassword: z.string(),
-    token: z.string(),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-export type RequestResetState = {
-  errors?: {
-    email?: string[];
-    _form?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
-
-export type ResetPasswordState = {
-  errors?: {
-    password?: string[];
-    confirmPassword?: string[];
-    token?: string[];
-    _form?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
+export type { RequestResetState, ResetPasswordState };
 
 export async function requestPasswordReset(
   prevState: RequestResetState,

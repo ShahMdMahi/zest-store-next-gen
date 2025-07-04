@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { MailCheck } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function VerifyLoading() {
   return (
@@ -12,7 +12,7 @@ export default function VerifyLoading() {
           </div>
         </div>
         <Skeleton className="mx-auto mb-2 h-8 w-48" />
-        <Skeleton className="mx-auto h-4 w-56" />
+        <Skeleton className="mx-auto h-4 w-64" />
       </div>
 
       <Card className="border-border border shadow-sm">

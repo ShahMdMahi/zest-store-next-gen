@@ -1,21 +1,32 @@
 "use client";
 
-import { useActionState, useState, useTransition, useEffect } from "react";
-import { useFormStatus } from "react-dom";
+// React and React DOM imports
+import { useState, useEffect, useTransition } from "react";
+import { useActionState } from "react";
+
+// Next.js imports
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+
+// Server actions
 import { register, socialLogin } from "@/actions/auth";
-import type { RegisterFormState } from "@/actions/auth/register";
+import type { RegisterFormState } from "@/lib/form-types";
+
+// Third-party libraries
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+// Icons
 import { Eye, EyeOff, Github, Loader2, LockKeyhole, Mail, User, UserPlus } from "lucide-react";
+
+// Validation schemas
+import { registerSchema } from "@/lib/validation-schemas";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -33,56 +44,11 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Define form validation schema
-const registerFormSchema = z
-  .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Please enter a valid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .refine(password => /[A-Z]/.test(password), {
-        message: "Password must contain at least one uppercase letter",
-      })
-      .refine(password => /[a-z]/.test(password), {
-        message: "Password must contain at least one lowercase letter",
-      })
-      .refine(password => /[0-9]/.test(password), {
-        message: "Password must contain at least one number",
-      })
-      .refine(password => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password), {
-        message: "Password must contain at least one special character",
-      }),
-    confirmPassword: z.string(),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+// Define form validation values type based on shared schema
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
-type RegisterFormValues = z.infer<typeof registerFormSchema>;
-
-// Submit button component to handle form submission state
-function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
-  const { pending } = useFormStatus();
-  const isDisabled = pending || isSubmitting;
-
-  return (
-    <Button type="submit" className="w-full transition-all" disabled={isDisabled}>
-      {isDisabled ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Creating account...
-        </>
-      ) : (
-        <>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Create account
-        </>
-      )}
-    </Button>
-  );
-}
+// Import shared submit button component
+import { SubmitButton } from "@/components/auth/submit-button";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -102,14 +68,14 @@ export function RegisterForm() {
 
   // Initialize react-hook-form
   const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
-    mode: "onChange", // Validate on field change
+    mode: "onTouched", // Validate on field blur for consistency
     criteriaMode: "all", // Show all validation criteria
   });
 
@@ -477,7 +443,16 @@ export function RegisterForm() {
               </Button>
             </div>
 
-            <SubmitButton isSubmitting={isPendingTransition} />
+            <SubmitButton
+              isSubmitting={isPendingTransition}
+              text={
+                <>
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Create account
+                </>
+              }
+              submittingText="Creating account..."
+            />
           </form>
         </Form>
       </CardContent>

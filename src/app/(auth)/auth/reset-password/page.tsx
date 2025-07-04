@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 import { LockKeyhole } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -35,6 +35,14 @@ export default async function ResetPasswordPage({
         </div>
 
         <Card className="border-border border shadow-sm">
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
+              Invalid Reset Link
+            </CardTitle>
+            <CardDescription className="text-center">
+              Please request a new password reset link
+            </CardDescription>
+          </CardHeader>
           <CardContent>
             <Alert variant="destructive" className="mb-6">
               <AlertDescription>

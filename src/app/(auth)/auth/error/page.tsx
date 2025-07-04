@@ -51,9 +51,11 @@ export default async function ErrorPage({
       </div>
 
       <Card className="border-border border shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-semibold">Unable to Sign In</CardTitle>
-          <CardDescription>Please review the error below</CardDescription>
+        <CardHeader className="space-y-1 pb-6">
+          <CardTitle className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
+            Unable to Sign In
+          </CardTitle>
+          <CardDescription className="text-center">Please review the error below</CardDescription>
         </CardHeader>
         <CardContent>
           <Alert variant="destructive" className="text-sm">

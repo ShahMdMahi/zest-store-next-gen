@@ -1,51 +1,15 @@
 "use server";
 
-import { z } from "zod";
 import { prisma } from "@/prisma";
 import { signIn } from "@/auth";
 import { logger } from "@/lib/logger";
 import { hashPassword } from "@/lib/password-utils";
 import { generateToken } from "@/lib/auth-utils";
 import { sendWelcomeEmail, sendAccountVerificationEmail } from "@/actions/email";
+import { registerSchema } from "@/lib/validation-schemas";
+import { RegisterFormState } from "@/lib/form-types";
 
-// Registration validation schema
-const registerSchema = z
-  .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Please enter a valid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .refine(password => /[A-Z]/.test(password), {
-        message: "Password must contain at least one uppercase letter",
-      })
-      .refine(password => /[a-z]/.test(password), {
-        message: "Password must contain at least one lowercase letter",
-      })
-      .refine(password => /[0-9]/.test(password), {
-        message: "Password must contain at least one number",
-      })
-      .refine(password => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password), {
-        message: "Password must contain at least one special character",
-      }),
-    confirmPassword: z.string(),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-export type RegisterFormState = {
-  errors?: {
-    name?: string[];
-    email?: string[];
-    password?: string[];
-    confirmPassword?: string[];
-    _form?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
+export type { RegisterFormState };
 
 export async function register(
   prevState: RegisterFormState,

@@ -3,14 +3,9 @@
 import { prisma } from "@/prisma";
 import { logger } from "@/lib/logger";
 import { generateToken } from "@/lib/auth-utils";
+import { VerifyAccountState } from "@/lib/form-types";
 
-export type VerifyAccountState = {
-  errors?: {
-    _form?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
+export type { VerifyAccountState };
 
 export async function verifyAccount(token: string): Promise<VerifyAccountState> {
   try {
@@ -82,7 +77,10 @@ export async function verifyAccount(token: string): Promise<VerifyAccountState> 
   }
 }
 
-export async function resendVerificationEmail(email: string): Promise<VerifyAccountState> {
+export async function resendVerificationEmail(
+  prevState: VerifyAccountState,
+  email: string
+): Promise<VerifyAccountState> {
   try {
     if (!email) {
       return {

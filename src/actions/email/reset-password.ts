@@ -24,6 +24,7 @@ const sendResetPasswordEmail = async (
       })
     );
     const info = await sendMail(to, SUBJECT, emailContent);
+    return info;
   } catch (error) {
     logger.error("Error sending reset password email:", error as Error);
     throw error; // Rethrow the error to be handled by the caller

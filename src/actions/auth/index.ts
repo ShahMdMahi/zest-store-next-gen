@@ -89,8 +89,12 @@ export async function verifyAccount(token: string): Promise<VerifyAccountState> 
   return verifyAccountAction(token);
 }
 
-export async function resendVerificationEmail(email: string): Promise<VerifyAccountState> {
-  return resendVerificationEmailAction(email);
+export async function resendVerificationEmail(
+  prevState: VerifyAccountState,
+  formData: FormData
+): Promise<VerifyAccountState> {
+  const email = formData.get("email") as string;
+  return resendVerificationEmailAction(prevState, email);
 }
 
 export async function requestPasswordReset(

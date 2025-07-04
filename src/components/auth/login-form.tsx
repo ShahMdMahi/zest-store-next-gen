@@ -1,17 +1,30 @@
 "use client";
 
-import { useActionState, useState, useTransition, useEffect } from "react";
-import { useFormStatus } from "react-dom";
+// React hooks
+import { useState, useEffect, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+
+// Next.js components
 import Link from "next/link";
-import { login, socialLogin } from "@/actions/auth";
-import type { LoginFormState } from "@/actions/auth/login";
-import { toast } from "sonner";
+
+// Form and validation
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Eye, EyeOff, Github, Loader2, LockKeyhole, LogIn, Mail } from "lucide-react";
+import { useActionState } from "react";
+import { loginSchema } from "@/lib/validation-schemas";
 
+// Server actions
+import { login, socialLogin } from "@/actions/auth";
+import { LoginFormState } from "@/lib/form-types";
+
+// Icons
+import { Eye, EyeOff, Github, LockKeyhole, LogIn, Mail, Loader2 } from "lucide-react";
+
+// Notifications
+import { toast } from "sonner";
+
+// UI Components
+import { SubmitButton } from "@/components/auth/submit-button";
 import {
   Form,
   FormControl,
@@ -31,36 +44,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import z from "zod";
 
-// Define form validation schema
-const loginFormSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-type LoginFormValues = z.infer<typeof loginFormSchema>;
-
-// Submit button component to handle form submission state
-function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
-  const { pending } = useFormStatus();
-  const isDisabled = pending || isSubmitting;
-
-  return (
-    <Button type="submit" className="w-full transition-all" disabled={isDisabled}>
-      {isDisabled ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Logging in...
-        </>
-      ) : (
-        <>
-          <LogIn className="mr-2 h-4 w-4" />
-          Login
-        </>
-      )}
-    </Button>
-  );
-}
+// Define the form values type from our schema
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
@@ -79,12 +66,12 @@ export function LoginForm() {
 
   // Initialize react-hook-form
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-    mode: "onChange", // Validate on field change
+    mode: "onTouched", // Validate when fields are touched
     criteriaMode: "all", // Show all validation criteria
   });
 
@@ -251,7 +238,12 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <SubmitButton isSubmitting={isPendingTransition} />
+            <SubmitButton
+              isSubmitting={isPendingTransition}
+              text="Login"
+              submittingText="Logging in..."
+              icon={<LogIn className="h-4 w-4" />}
+            />
           </form>
         </Form>
       </CardContent>

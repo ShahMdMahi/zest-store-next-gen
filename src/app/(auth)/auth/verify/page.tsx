@@ -40,9 +40,13 @@ export default async function VerifyPage({
           <p className="text-muted-foreground mt-2 text-sm">Invalid verification request</p>
         </div>
         <Card className="border-border border shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-xl font-semibold">Invalid Verification</CardTitle>
-            <CardDescription>Please check your verification link</CardDescription>
+          <CardHeader className="space-y-1 pb-6">
+            <CardTitle className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
+              Invalid Verification
+            </CardTitle>
+            <CardDescription className="text-center">
+              Please check your verification link
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Alert variant="destructive" className="text-sm">
@@ -88,11 +92,11 @@ export default async function VerifyPage({
       </div>
 
       <Card className="border-border border shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-semibold">
+        <CardHeader className="space-y-1 pb-6">
+          <CardTitle className="text-center text-xl font-semibold tracking-tight sm:text-2xl">
             {result.success ? "Verification Successful" : "Verification Failed"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-center">
             {result.success
               ? "Your account has been verified"
               : "There was a problem with verification"}

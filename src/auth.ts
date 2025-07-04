@@ -74,7 +74,7 @@ declare module "next-auth" {
  * Helper function to get the current session identifier
  * Used for session management functionality with JWT strategy
  */
-async function getSessionIdentifier(userId: string): Promise<string | null> {
+async function getSessionIdentifier(): Promise<string | null> {
   try {
     // With JWT strategy, we don't have direct access to session IDs in the database
     // Instead, we'll use a hash of the user ID + some unique value as a session identifier
@@ -116,7 +116,7 @@ const callbacks: NextAuthConfig["callbacks"] = {
         token.tokenLastValidated = Date.now(); // If account is available, it's a new sign-in
         if (account) {
           // Get session identifier
-          const sessionIdentifier = await getSessionIdentifier(user.id || "");
+          const sessionIdentifier = await getSessionIdentifier();
 
           if (sessionIdentifier) {
             // Record the new JWT session with user agent info
@@ -143,7 +143,7 @@ const callbacks: NextAuthConfig["callbacks"] = {
 
       // First check if the session has been revoked
       if (token.sub) {
-        const sessionIdentifier = await getSessionIdentifier(token.sub);
+        const sessionIdentifier = await getSessionIdentifier();
         if (sessionIdentifier) {
           const isRevoked = await isJwtSessionRevoked(sessionIdentifier);
 
@@ -226,7 +226,7 @@ const callbacks: NextAuthConfig["callbacks"] = {
 
         // Add session identifier for session management
         // This is needed to identify the current session when revoking other sessions
-        const sessionIdentifier = await getSessionIdentifier(token.sub || "");
+        const sessionIdentifier = await getSessionIdentifier();
         if (sessionIdentifier) {
           (session.user as { sessionToken?: string }).sessionToken = sessionIdentifier;
         }

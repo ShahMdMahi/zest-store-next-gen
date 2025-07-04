@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { useActionState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
-import { resetPassword } from "@/actions/auth";
-import { toast } from "sonner";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+// React hooks
+import { useState, useEffect, useTransition } from "react";
+
+// Form and validation
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useActionState } from "react";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2, LockKeyhole, ArrowRight } from "lucide-react";
 
+// Server actions
+import { resetPassword } from "@/actions/auth";
+import { ResetPasswordState } from "@/lib/form-types";
+
+// Next.js components
+import Link from "next/link";
+
+// Icons
+import { Eye, EyeOff, LockKeyhole, ArrowRight } from "lucide-react";
+
+// Notifications
+import { toast } from "sonner";
+
+// UI Components
+import { SubmitButton } from "@/components/auth/submit-button";
 import {
   Form,
   FormControl,
@@ -32,8 +44,10 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Define form validation schema
-const resetPasswordSchema = z
+// Define the form values type from our schema
+// We need to modify the schema slightly because it expects a token field
+// but that's passed separately in this component
+const resetPasswordFormSchema = z
   .object({
     password: z
       .string()
@@ -57,50 +71,17 @@ const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
-
-// Form state type
-type ResetPasswordFormState = {
-  errors?: {
-    _form?: string[];
-    password?: string[];
-    confirmPassword?: string[];
-  };
-  message?: string | null;
-  success: boolean;
-};
-
-// Submit button component to handle form submission state
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="w-full transition-all" disabled={pending}>
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Resetting Password...
-        </>
-      ) : (
-        <>
-          <LockKeyhole className="mr-2 h-4 w-4" />
-          Reset Password
-        </>
-      )}
-    </Button>
-  );
-}
+type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
 
 interface ResetPasswordFormProps {
   token: string;
 }
 
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const initialState: ResetPasswordFormState = {
+  const initialState: ResetPasswordState = {
     errors: {},
     message: null,
     success: false,
@@ -109,14 +90,14 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const [state, formAction] = useActionState(resetPassword, initialState);
   const [isPendingTransition, startTransition] = useTransition();
 
-  // Initialize react-hook-form
+  // Initialize react-hook-form with our custom schema
   const form = useForm<ResetPasswordFormValues>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordFormSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
-    mode: "onTouched", // Validate immediately on blur
+    mode: "onTouched", // Validate on blur
     criteriaMode: "all", // Show all validation criteria
   });
 
@@ -134,10 +115,12 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     });
   };
 
-  // Show success toast if password was reset successfully
-  if (state.success && !state.errors) {
-    toast.success("Password reset successful!");
-  }
+  // Handle successful password reset and display toast
+  useEffect(() => {
+    if (state.success && !state.errors) {
+      toast.success("Password reset successful!");
+    }
+  }, [state.success, state.errors]);
 
   return (
     <Card className="border-border border shadow-sm">
@@ -416,7 +399,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                                 clipRule="evenodd"
                               />
                             </svg>
-                            Passwords don't match
+                            Passwords don&apos;t match
                           </p>
                         )}
                       </div>
@@ -425,7 +408,12 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                 )}
               />
 
-              <SubmitButton />
+              <SubmitButton
+                isSubmitting={isPendingTransition}
+                text="Reset Password"
+                submittingText="Resetting Password..."
+                icon={<LockKeyhole className="h-4 w-4" />}
+              />
             </form>
           </Form>
         )}

@@ -11,13 +11,13 @@ export default function ResendVerificationLoading() {
             <MailCheck className="text-primary h-6 w-6 animate-pulse" />
           </div>
         </div>
-        <Skeleton className="mx-auto mb-2 h-8 w-64" />
-        <Skeleton className="mx-auto h-4 w-72" />
+        <Skeleton className="mx-auto mb-2 h-8 w-48" />
+        <Skeleton className="mx-auto h-4 w-64" />
       </div>
 
       <Card className="border-border border shadow-sm">
         <CardHeader className="space-y-2 pb-6">
-          <Skeleton className="mx-auto h-6 w-48" />
+          <Skeleton className="mx-auto h-6 w-36" />
           <Skeleton className="mx-auto h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-4">

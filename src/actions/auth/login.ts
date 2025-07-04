@@ -1,6 +1,5 @@
 "use server";
 
-import { z } from "zod";
 import { AuthError } from "next-auth";
 import { prisma } from "@/prisma";
 import { signIn } from "@/auth";
@@ -12,22 +11,10 @@ import {
   recordFailedLoginAttempt,
   getCooldownTimeRemaining,
 } from "@/lib/auth-security";
+import { loginSchema } from "@/lib/validation-schemas";
+import { LoginFormState } from "@/lib/form-types";
 
-// Login validation schema
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-export type LoginFormState = {
-  errors?: {
-    email?: string[];
-    password?: string[];
-    _form?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
+export type { LoginFormState };
 
 export async function login(
   prevState: LoginFormState,

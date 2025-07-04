@@ -18,7 +18,7 @@ export default function ForgotPasswordLoading() {
       <Card className="border-border border shadow-sm">
         <CardHeader className="space-y-2 pb-6">
           <Skeleton className="mx-auto h-6 w-36" />
-          <Skeleton className="mx-auto h-4 w-52" />
+          <Skeleton className="mx-auto h-4 w-64" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">

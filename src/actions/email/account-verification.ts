@@ -24,6 +24,7 @@ const sendAccountVerificationEmail = async (
       })
     );
     const info = await sendMail(to, SUBJECT, emailContent);
+    return info;
   } catch (error) {
     logger.error("Error sending account verification email:", error as Error);
     throw error; // Rethrow the error to be handled by the caller

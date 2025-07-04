@@ -1,17 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useActionState, useTransition } from "react";
-import { useFormStatus } from "react-dom";
-import { requestPasswordReset } from "@/actions/auth";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+// React hooks
+import { useEffect, useTransition } from "react";
+
+// Form and validation
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useActionState } from "react";
 import { z } from "zod";
-import { Loader2, Mail, ArrowRight } from "lucide-react";
 
+// Server actions
+import { requestPasswordReset } from "@/actions/auth";
+import { RequestResetState } from "@/lib/form-types";
+
+// Next.js components
+import Link from "next/link";
+
+// Icons
+import { Mail, ArrowRight } from "lucide-react";
+
+// Notifications
+import { toast } from "sonner";
+
+// UI Components
+import { SubmitButton } from "@/components/auth/submit-button";
+
+// Validation schemas
+import { forgotPasswordSchema } from "@/lib/validation-schemas";
 import {
   Form,
   FormControl,
@@ -32,48 +47,11 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Define form validation schema
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
-
+// Define form values type using shared schema
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
-// Form state type
-type ForgotPasswordFormState = {
-  errors?: {
-    _form?: string[];
-    email?: string[];
-  };
-  message?: string | null;
-  success: boolean;
-};
-
-// Submit button component to handle form submission state
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="w-full transition-all" disabled={pending}>
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Sending...
-        </>
-      ) : (
-        <>
-          <Mail className="mr-2 h-4 w-4" />
-          Send Reset Link
-        </>
-      )}
-    </Button>
-  );
-}
-
 export function ForgotPasswordForm() {
-  const router = useRouter();
-
-  const initialState: ForgotPasswordFormState = {
+  const initialState: RequestResetState = {
     errors: {},
     message: null,
     success: false,
@@ -104,10 +82,12 @@ export function ForgotPasswordForm() {
     });
   };
 
-  // Show success toast if the email was sent successfully
-  if (state.success && !state.errors) {
-    toast.success("Reset link sent! Please check your email.");
-  }
+  // Handle successful password reset request and display toast
+  useEffect(() => {
+    if (state.success && !state.errors) {
+      toast.success("Reset link sent! Please check your email.");
+    }
+  }, [state.success, state.errors]);
 
   return (
     <Card className="border-border border shadow-sm">
@@ -116,7 +96,7 @@ export function ForgotPasswordForm() {
           Forgot Password
         </CardTitle>
         <CardDescription className="text-center">
-          Enter your email address and we'll send you a link to reset your password
+          Enter your email address and we&apos;ll send you a link to reset your password
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -211,7 +191,16 @@ export function ForgotPasswordForm() {
                 )}
               />
 
-              <SubmitButton />
+              <SubmitButton
+                isSubmitting={isPendingTransition}
+                text={
+                  <>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Send Reset Link
+                  </>
+                }
+                submittingText="Sending..."
+              />
             </form>
           </Form>
         )}
