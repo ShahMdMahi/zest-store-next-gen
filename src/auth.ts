@@ -3,7 +3,7 @@ import type { NextAuthConfig } from "next-auth";
 import authConfig from "@/auth.config";
 import { prisma } from "@/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Role } from "@/prisma/client";
+import { Role } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { cookies } from "next/headers";
 import { headers } from "next/headers";

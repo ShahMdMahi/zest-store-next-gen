@@ -1,4 +1,4 @@
-import { User } from "@/prisma/client";
+import { User } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { auth } from "@/auth";
 import crypto from "crypto";
