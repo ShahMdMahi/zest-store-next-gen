@@ -82,7 +82,7 @@ export async function revokeAllOtherSessions(): Promise<SessionRevocationResult>
   return revokeAllOtherSessionsAction();
 }
 
-export async function initJwtSessionManagement(): Promise<void> {
+export async function initJwtSessionManagement(): Promise<{ success: boolean; cleanedCount?: number; error?: string }> {
   return initJwtSessionManagementAction();
 }
 
