@@ -14,14 +14,16 @@ import { CartButton } from "@/components/root/cart-button";
 import { ProfileButton } from "@/components/common/profile-button";
 import { Search } from "@/components/root/search";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/auth";
 
-export function RootNavbar() {
+export async function RootNavbar() {
+  const session = await auth();
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur transition-all">
       <div className="container mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
         <div className="flex items-center gap-3 sm:gap-6">
           {/* Mobile menu */}
-          <RootNavbarMobile />
+          <RootNavbarMobile session={session} />
 
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-2">
@@ -101,7 +103,7 @@ export function RootNavbar() {
           />
 
           {/* Profile button - using the dedicated component */}
-          <ProfileButton />
+          <ProfileButton session={session} />
 
           <ThemeToggle />
         </div>

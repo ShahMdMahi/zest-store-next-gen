@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,14 +13,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User, Settings, LogOut, UserPlus, LogIn } from "lucide-react";
 import Link from "next/link";
+import { Session } from "next-auth";
 
 interface ProfileButtonProps {
   isMobile?: boolean;
   onMobileNavClose?: () => void;
+  session: Session | null;
 }
 
-export function ProfileButton({ isMobile = false, onMobileNavClose }: ProfileButtonProps) {
-  const { data: session, status } = useSession();
+export function ProfileButton({ isMobile = false, onMobileNavClose, session }: ProfileButtonProps) {
   const [open, setOpen] = useState(false);
 
   const handleSignOut = async () => {
@@ -40,19 +41,19 @@ export function ProfileButton({ isMobile = false, onMobileNavClose }: ProfileBut
 
   // For mobile version
   if (isMobile) {
-    return status === "authenticated" ? (
+    return session?.user?.id ? (
       <div className="space-y-2">
         <div className="flex items-center gap-3 p-2">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={session.user?.image || undefined}
-              alt={session.user?.name || "User"}
+              src={session?.user?.image || undefined}
+              alt={session?.user?.name || "User"}
             />
-            <AvatarFallback>{session.user?.name?.charAt(0) || "U"}</AvatarFallback>
+            <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <p className="text-sm font-medium">{session.user?.name || "User"}</p>
-            <p className="text-muted-foreground truncate text-xs">{session.user?.email}</p>
+            <p className="text-sm font-medium">{session?.user?.name || "User"}</p>
+            <p className="text-muted-foreground truncate text-xs">{session?.user?.email}</p>
           </div>
         </div>
 
@@ -108,26 +109,26 @@ export function ProfileButton({ isMobile = false, onMobileNavClose }: ProfileBut
   }
 
   // For desktop version
-  return status === "authenticated" ? (
+  return session?.user?.id ? (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="hidden sm:flex">
         <Button variant="ghost" size="icon" className="rounded-full" aria-label="User profile">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={session.user?.image || undefined}
-              alt={session.user?.name || "User"}
+              src={session?.user?.image || undefined}
+              alt={session?.user?.name || "User"}
             />
-            <AvatarFallback>{session.user?.name?.charAt(0) || "U"}</AvatarFallback>
+            <AvatarFallback>{session?.user?.name?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
-            {session.user?.name && <p className="font-medium">{session.user.name}</p>}
-            {session.user?.email && (
+            {session?.user?.name && <p className="font-medium">{session.user.name}</p>}
+            {session?.user?.email && (
               <p className="text-muted-foreground w-[200px] truncate text-sm">
-                {session.user.email}
+                {session?.user.email}
               </p>
             )}
           </div>

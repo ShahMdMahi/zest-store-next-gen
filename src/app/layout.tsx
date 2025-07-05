@@ -27,17 +27,17 @@ export default function MainLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SessionProvider>
-      {/* Initialize JWT session management */}
-      <InitJwtSessions />
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SessionProvider>
+          {/* Initialize JWT session management */}
+          <InitJwtSessions />
           <ThemeProvider>
             {children}
-            <Toaster />
+            <Toaster richColors={true} />
           </ThemeProvider>
-        </body>
-      </html>
-    </SessionProvider>
+        </SessionProvider>
+      </body>
+    </html>
   );
 }

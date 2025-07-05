@@ -18,6 +18,7 @@ import {
   requestPasswordReset as requestPasswordResetAction,
   resetPassword as resetPasswordAction,
 } from "./reset-password";
+import { debugSessions as debugSessionsAction } from "./debug-sessions";
 
 import type { LoginFormState } from "./login";
 import type { RegisterFormState } from "./register";
@@ -109,4 +110,9 @@ export async function resetPassword(
   formData: FormData
 ): Promise<ResetPasswordState> {
   return resetPasswordAction(prevState, formData);
+}
+
+// Debug function
+export async function debugSessions() {
+  return debugSessionsAction();
 }

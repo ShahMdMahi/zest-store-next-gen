@@ -21,12 +21,12 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/orders") ||
     pathname.startsWith("/dashboard");
 
-  logger.debug("Middleware request:", {
-    isAuthenticated,
-    isAdminRoute,
-    isProtectedRoute,
-    url: pathname,
-  });
+  // logger.debug("Middleware request:", {
+  //   isAuthenticated,
+  //   isAdminRoute,
+  //   isProtectedRoute,
+  //   url: pathname,
+  // });
 
   // Redirect authenticated users away from auth pages (login/register)
   if (isAuthenticated && pathname.startsWith("/auth/")) {

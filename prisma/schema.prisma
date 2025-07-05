@@ -56,6 +56,7 @@ model User {
   role          Role      @default(USER)
   accounts      Account[]
   sessions      Session[]
+  jwtSessions   JwtSession[]
 
   isActive     Boolean   @default(true) @map("is_active")
   lastLogin    DateTime? @map("last_login")
@@ -100,6 +101,8 @@ model JwtSession {
   userAgent  String?  @map("user_agent")
   ipAddress  String?  @map("ip_address")
   isRevoked  Boolean  @default(false) @map("is_revoked")
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], name: "jwt_sessions_user_id_idx")
   @@map("jwt_sessions")

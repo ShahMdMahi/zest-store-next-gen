@@ -7,6 +7,15 @@
 
 import { prisma } from "@/prisma";
 import { logger } from "@/lib/logger";
+import { parseUserAgent } from "@/lib/user-agent-parser";
+
+// Type declaration for EdgeRuntime in global context
+declare global {
+  var EdgeRuntime: string | undefined;
+}
+
+// Check if we're in an Edge runtime environment
+const isEdgeRuntime = typeof globalThis.EdgeRuntime !== "undefined";
 
 // Define the interface for our custom session tracking
 export interface JwtSession {
@@ -19,42 +28,6 @@ export interface JwtSession {
   isRevoked: boolean; // Whether this session has been revoked
 }
 
-// We'll use a dedicated table for tracking JWT sessions
-export async function setupJwtSessionTable() {
-  // Check if the table exists
-  try {
-    const tableExists = await prisma.$queryRaw`
-      SELECT EXISTS (
-        SELECT FROM pg_tables
-        WHERE schemaname = 'public'
-        AND tablename = 'jwt_sessions'
-      );
-    `;
-
-    // If table doesn't exist, create it
-    if (!tableExists) {
-      await prisma.$executeRaw`
-        CREATE TABLE IF NOT EXISTS jwt_sessions (
-          id TEXT PRIMARY KEY,
-          user_id TEXT NOT NULL,
-          created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-          last_used_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-          user_agent TEXT,
-          ip_address TEXT,
-          is_revoked BOOLEAN NOT NULL DEFAULT FALSE
-        );
-      `;
-
-      // Create an index on user_id for faster lookups
-      await prisma.$executeRaw`
-        CREATE INDEX IF NOT EXISTS jwt_sessions_user_id_idx ON jwt_sessions(user_id);
-      `;
-    }
-  } catch (error) {
-    logger.error("Error setting up JWT session table:", error as Error);
-  }
-}
-
 // Record a new JWT session
 export async function recordJwtSession(
   sessionId: string,
@@ -62,32 +35,94 @@ export async function recordJwtSession(
   userAgent?: string,
   ipAddress?: string
 ): Promise<void> {
-  try {
-    // Ensure userAgent and ipAddress are strings or null for SQL query
-    const sanitizedUserAgent = userAgent || null;
-    const sanitizedIpAddress = ipAddress || null;
+  // Skip database operations in Edge runtime
+  if (isEdgeRuntime) {
+    logger.info(`[Edge] Would record JWT session: ${sessionId} for user: ${userId}`);
+    return;
+  }
 
-    await prisma.$executeRaw`
-      INSERT INTO jwt_sessions (id, user_id, user_agent, ip_address)
-      VALUES (${sessionId}, ${userId}, ${sanitizedUserAgent}, ${sanitizedIpAddress})
-      ON CONFLICT (id) DO UPDATE
-      SET last_used_at = NOW();
-    `;
+  try {
+    if (!sessionId || !userId) {
+      logger.warn(`Cannot record JWT session: missing sessionId or userId`);
+      return;
+    }
+
+    // Try to parse user agent to ensure it's valid
+    if (userAgent) {
+      const deviceInfo = parseUserAgent(userAgent);
+      logger.debug(
+        `Recording session for ${deviceInfo.browser} on ${deviceInfo.os} (${deviceInfo.device})`
+      );
+    } else {
+      logger.debug(`Recording session with no user agent information`);
+    }
+
+    logger.info(`Recording JWT session: ${sessionId} for user: ${userId}`);
+
+    // Use Prisma client methods for upsert operation
+    await prisma.jwtSession.upsert({
+      where: { id: sessionId },
+      update: {
+        lastUsedAt: new Date(),
+        // Only update these if provided
+        ...(userAgent && { userAgent }),
+        ...(ipAddress && { ipAddress }),
+      },
+      create: {
+        id: sessionId,
+        userId,
+        userAgent: userAgent || null,
+        ipAddress: ipAddress || null,
+        createdAt: new Date(),
+        lastUsedAt: new Date(),
+        isRevoked: false,
+      },
+    });
+
+    logger.info(`Successfully recorded JWT session: ${sessionId}`);
   } catch (error) {
-    logger.error("Error recording JWT session:", error as Error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error(`Error recording JWT session: ${errorMessage}`, error as Error);
   }
 }
 
 // Update a JWT session's last used timestamp
-export async function updateJwtSession(sessionId: string): Promise<void> {
+export async function updateJwtSession(sessionId: string, userId?: string): Promise<void> {
+  // Skip database operations in Edge runtime
+  if (isEdgeRuntime) {
+    logger.info(`[Edge] Would update JWT session timestamp: ${sessionId}`);
+    return;
+  }
+
   try {
-    await prisma.$executeRaw`
-      UPDATE jwt_sessions
-      SET last_used_at = NOW()
-      WHERE id = ${sessionId};
-    `;
+    if (!sessionId) {
+      logger.warn(`Cannot update JWT session: missing sessionId`);
+      return;
+    }
+
+    // First check if the session exists
+    const session = await prisma.jwtSession.findUnique({
+      where: { id: sessionId },
+      select: { userId: true },
+    });
+
+    if (session) {
+      // Update existing session
+      await prisma.jwtSession.update({
+        where: { id: sessionId },
+        data: { lastUsedAt: new Date() },
+      });
+    } else if (userId) {
+      // Create a new session if we have userId
+      await recordJwtSession(sessionId, userId);
+    } else {
+      logger.warn(
+        `JWT session ${sessionId} not found and no userId provided, cannot create or update`
+      );
+    }
   } catch (error) {
-    logger.error("Error updating JWT session:", error as Error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error(`Error updating JWT session: ${errorMessage}`, error as Error);
   }
 }
 
@@ -95,14 +130,17 @@ export async function updateJwtSession(sessionId: string): Promise<void> {
 export async function revokeJwtSession(sessionId: string, userId: string): Promise<boolean> {
   try {
     // Mark the session as revoked
-    const result = await prisma.$executeRaw`
-      UPDATE jwt_sessions
-      SET is_revoked = TRUE
-      WHERE id = ${sessionId}
-      AND user_id = ${userId};
-    `;
+    const result = await prisma.jwtSession.updateMany({
+      where: {
+        id: sessionId,
+        userId: userId,
+      },
+      data: {
+        isRevoked: true,
+      },
+    });
 
-    return result > 0;
+    return result.count > 0;
   } catch (error) {
     logger.error("Error revoking JWT session:", error as Error);
     return false;
@@ -116,14 +154,17 @@ export async function revokeAllOtherJwtSessions(
 ): Promise<number> {
   try {
     // Mark all other sessions as revoked
-    const result = await prisma.$executeRaw`
-      UPDATE jwt_sessions
-      SET is_revoked = TRUE
-      WHERE user_id = ${userId}
-      AND id != ${currentSessionId};
-    `;
+    const result = await prisma.jwtSession.updateMany({
+      where: {
+        userId: userId,
+        id: { not: currentSessionId },
+      },
+      data: {
+        isRevoked: true,
+      },
+    });
 
-    return Number(result);
+    return result.count;
   } catch (error) {
     logger.error("Error revoking other JWT sessions:", error as Error);
     return 0;
@@ -133,21 +174,14 @@ export async function revokeAllOtherJwtSessions(
 // Get all JWT sessions for a user
 export async function getJwtSessions(userId: string): Promise<JwtSession[]> {
   try {
-    const sessions = await prisma.$queryRaw<JwtSession[]>`
-      SELECT 
-        id, 
-        user_id as "userId", 
-        created_at as "createdAt", 
-        last_used_at as "lastUsedAt", 
-        user_agent as "userAgent", 
-        ip_address as "ipAddress", 
-        is_revoked as "isRevoked"
-      FROM jwt_sessions
-      WHERE user_id = ${userId}
-      ORDER BY last_used_at DESC;
-    `;
+    logger.info(`Getting JWT sessions for user: ${userId}`);
 
-    return sessions;
+    const sessions = await prisma.jwtSession.findMany({
+      where: { userId },
+      orderBy: { lastUsedAt: "desc" },
+    });
+
+    return sessions as JwtSession[];
   } catch (error) {
     logger.error("Error getting JWT sessions:", error as Error);
     return [];
@@ -156,17 +190,31 @@ export async function getJwtSessions(userId: string): Promise<JwtSession[]> {
 
 // Check if a JWT session is revoked
 export async function isJwtSessionRevoked(sessionId: string): Promise<boolean> {
-  try {
-    const result = await prisma.$queryRaw<{ is_revoked: boolean }[]>`
-      SELECT is_revoked
-      FROM jwt_sessions
-      WHERE id = ${sessionId}
-      LIMIT 1;
-    `;
+  // Skip database operations in Edge runtime
+  if (isEdgeRuntime) {
+    logger.info(`[Edge] Would check if JWT session is revoked: ${sessionId}`);
+    return false; // Assume not revoked in Edge runtime
+  }
 
-    return result.length > 0 && result[0].is_revoked;
+  try {
+    if (!sessionId) {
+      logger.warn("Cannot check if JWT session is revoked: Session ID is empty");
+      return false;
+    }
+
+    const session = await prisma.jwtSession.findUnique({
+      where: { id: sessionId },
+      select: { isRevoked: true },
+    });
+
+    if (!session) {
+      logger.debug(`JWT session not found: ${sessionId}`);
+    }
+
+    return session?.isRevoked ?? false;
   } catch (error) {
-    logger.error("Error checking if JWT session is revoked:", error as Error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error(`Error checking if JWT session is revoked: ${errorMessage}`, error as Error);
     // Default to not revoked if we can't check
     return false;
   }
@@ -175,13 +223,17 @@ export async function isJwtSessionRevoked(sessionId: string): Promise<boolean> {
 // Cleanup old sessions (can be run periodically)
 export async function cleanupOldJwtSessions(olderThanDays: number = 30): Promise<number> {
   try {
-    const result = await prisma.$executeRaw`
-      DELETE FROM jwt_sessions
-      WHERE last_used_at < NOW() - INTERVAL '${olderThanDays} days'
-      AND is_revoked = TRUE;
-    `;
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
 
-    return Number(result);
+    const result = await prisma.jwtSession.deleteMany({
+      where: {
+        lastUsedAt: { lt: cutoffDate },
+        isRevoked: true,
+      },
+    });
+
+    return result.count;
   } catch (error) {
     logger.error("Error cleaning up old JWT sessions:", error as Error);
     return 0;

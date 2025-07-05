@@ -8,8 +8,9 @@ import Link from "next/link";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ProfileButton } from "@/components/common/profile-button";
 import { MobileSearch } from "@/components/root/search";
+import { Session } from "next-auth";
 
-export function RootNavbarMobile() {
+export function RootNavbarMobile({ session }: { session: Session | null }) {
   const [open, setOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
@@ -87,7 +88,11 @@ export function RootNavbarMobile() {
 
             <div className="mt-6 border-t pt-6">
               <div className="px-2">
-                <ProfileButton isMobile={true} onMobileNavClose={() => setOpen(false)} />
+                <ProfileButton
+                  isMobile={true}
+                  onMobileNavClose={() => setOpen(false)}
+                  session={session}
+                />
               </div>
             </div>
           </div>

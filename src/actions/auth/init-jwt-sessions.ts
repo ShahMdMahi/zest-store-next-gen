@@ -1,23 +1,36 @@
 "use server";
 
-import { setupJwtSessionTable, cleanupOldJwtSessions } from "@/lib/jwt-session-store";
+import { cleanupOldJwtSessions } from "@/lib/jwt-session-store";
 import { logger } from "@/lib/logger";
 
 /**
  * Initialize JWT session management
  * This should be called during app initialization
+ * @param olderThanDays Number of days after which to clean up old sessions (default: 30)
+ * @returns Object with status information
  */
-export async function initJwtSessionManagement(): Promise<void> {
+export async function initJwtSessionManagement(olderThanDays: number = 30): Promise<{
+  success: boolean;
+  cleanedCount?: number;
+  error?: string;
+}> {
   try {
-    // Set up the JWT session table if it doesn't exist
-    await setupJwtSessionTable();
-
     // Clean up old/revoked JWT sessions
-    const cleanedCount = await cleanupOldJwtSessions(30); // 30 days
+    const cleanedCount = await cleanupOldJwtSessions(olderThanDays);
     if (cleanedCount > 0) {
       logger.info(`Cleaned up ${cleanedCount} old JWT sessions`);
     }
+
+    return {
+      success: true,
+      cleanedCount,
+    };
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logger.error("Error initializing JWT session management:", error as Error);
+    return {
+      success: false,
+      error: errorMessage,
+    };
   }
 }

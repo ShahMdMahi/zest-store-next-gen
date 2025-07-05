@@ -58,6 +58,15 @@ declare module "next-auth" {
      * Time when the token was last validated
      */
     tokenLastValidated?: number;
+    /**
+     * Flag to indicate that we need to record the session on the next request
+     * This is used when the session cookie isn't available during the initial sign-in
+     */
+    pendingSessionRecord?: boolean;
+    /**
+     * Number of attempts to record the session
+     */
+    pendingRecordAttempts?: number;
   }
 
   /**
@@ -87,12 +96,15 @@ async function getSessionIdentifier(): Promise<string | null> {
     );
 
     if (!sessionTokenCookie?.value) {
+      logger.warn("No session token cookie found");
       return null;
     }
 
     // We'll use the first 8 chars of the token as a session identifier
     // This is not the actual token, just a way to identify different sessions
-    return sessionTokenCookie.value.slice(0, 8);
+    const identifier = sessionTokenCookie.value.slice(0, 8);
+    logger.debug(`Generated session identifier: ${identifier}`);
+    return identifier;
   } catch (error) {
     logger.error("Error getting session identifier:", error as Error);
     return null;
@@ -114,20 +126,19 @@ const callbacks: NextAuthConfig["callbacks"] = {
         token.emailVerified = (user as unknown as { emailVerified?: Date }).emailVerified;
         token.image = user.image;
         token.tokenLastValidated = Date.now(); // If account is available, it's a new sign-in
+
+        // Store the user ID in the token so we can use it later to create the session
+        token.pendingSessionRecord = true;
+
+        // We'll record the session in the next call when the cookie will be available
         if (account) {
-          // Get session identifier
-          const sessionIdentifier = await getSessionIdentifier();
+          logger.info("New account sign-in", {
+            userId: user.id,
+            provider: account.provider,
+          });
+        }
 
-          if (sessionIdentifier) {
-            // Record the new JWT session with user agent info
-            const headersList = await headers();
-            const userAgent = headersList.get("user-agent") || undefined;
-            const ip =
-              headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
-
-            await recordJwtSession(sessionIdentifier, user.id || "", userAgent, ip);
-          }
-
+        if (account) {
           logger.info("New account sign-in", {
             userId: user.id,
             provider: account.provider,
@@ -141,19 +152,60 @@ const callbacks: NextAuthConfig["callbacks"] = {
       const currentTime = Date.now();
       const tokenValidationInterval = 60 * 60 * 1000; // 1 hour
 
-      // First check if the session has been revoked
+      // First check if we need to record a pending session
+      if (token.sub && token.pendingSessionRecord === true) {
+        const sessionIdentifier = await getSessionIdentifier();
+        if (sessionIdentifier) {
+          try {
+            // Now that we have the cookie, record the session
+            const headersList = await headers();
+            const userAgent = headersList.get("user-agent") || undefined;
+            const ip =
+              headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || undefined;
+
+            await recordJwtSession(sessionIdentifier, token.sub, userAgent, ip);
+            logger.info(`Recorded delayed session: ${sessionIdentifier} for user: ${token.sub}`);
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            logger.error(`Error recording delayed session: ${errorMessage}`);
+            // We'll try again on next request
+          } finally {
+            // Remove the flag so we don't try again on every request
+            // Only attempt to record a few times to prevent infinite loops
+            const attempts: number =
+              typeof token.pendingRecordAttempts === "number" ? token.pendingRecordAttempts : 0;
+            if (attempts >= 3) {
+              token.pendingSessionRecord = undefined;
+              token.pendingRecordAttempts = undefined;
+              logger.warn(`Giving up on recording session after ${attempts} attempts`);
+            } else {
+              token.pendingRecordAttempts = attempts + 1;
+            }
+          }
+        }
+      }
+
+      // Then check if the session has been revoked
       if (token.sub) {
         const sessionIdentifier = await getSessionIdentifier();
         if (sessionIdentifier) {
-          const isRevoked = await isJwtSessionRevoked(sessionIdentifier);
+          try {
+            const isRevoked = await isJwtSessionRevoked(sessionIdentifier);
 
-          if (isRevoked) {
-            logger.warn(`Rejected revoked session: ${sessionIdentifier} for user: ${token.sub}`);
-            return null; // Reject the token, forcing a new login
+            if (isRevoked) {
+              logger.warn(`Rejected revoked session: ${sessionIdentifier} for user: ${token.sub}`);
+              return null; // Reject the token, forcing a new login
+            }
+
+            // Update the session's last used timestamp
+            // Pass the userId so it can create the session if it doesn't exist
+            await updateJwtSession(sessionIdentifier, token.sub);
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            logger.error(`Error checking/updating session: ${errorMessage}`);
+            // Continue with token validation even if session tracking fails
+            // This ensures users can still use the application
           }
-
-          // Update the session's last used timestamp
-          await updateJwtSession(sessionIdentifier);
         }
       }
 
@@ -229,6 +281,9 @@ const callbacks: NextAuthConfig["callbacks"] = {
         const sessionIdentifier = await getSessionIdentifier();
         if (sessionIdentifier) {
           (session.user as { sessionToken?: string }).sessionToken = sessionIdentifier;
+          logger.info(`Set session token: ${sessionIdentifier} for user: ${token.sub}`);
+        } else {
+          logger.warn(`Failed to get session identifier for user: ${token.sub}`);
         }
       }
 
